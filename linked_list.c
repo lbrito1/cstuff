@@ -68,18 +68,9 @@ int delete(Element *list_head, void *data)
       if (searched) 
       {
             Element *removed = searched->next;
-
-            // >3 elements
-            if (searched->next->next)        
             searched->next = searched->next->next;
-
-            // <3 elements
-            else 								
-            searched->next = NULL;
-
             free(removed->data_ptr);
             free(removed);
-           
             return TRUE;
       }
       else return FALSE;
@@ -141,8 +132,15 @@ int main()
       
       print_list(head);
       test_delete(head, 1);
+      test_delete(head, 2);
+      test_delete(head, 3);
       test_delete(head, 4);
       test_delete(head, 5);
+      test_delete(head, 6);
+      test_delete(head, 7);
+      test_delete(head, 8);
+      test_delete(head, 9);
+      print_list(head);
       test_add(head, 1337);
       test_delete(head, 2);
       test_add(head, 98);
