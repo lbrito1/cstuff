@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef TEST_SIZE
-#define TEST_SIZE 10
+#if !defined _TEST_SIZE_LIST && defined _DEBUGGING
+#define _TEST_SIZE_LIST 10
 #endif
 
 #define TRUE 1
@@ -107,14 +107,14 @@ int delete(linked_list *list, void *data)
 //          Tests
 //======================
 
-#ifdef DEBUGGING
+#ifdef _DEBUGGING
 
 linked_list *build_list() 
 {	
       linked_list *list = new_list(compare_string);
       char *basetext = "I'm element number ";
       int i=1;
-      for (;i<TEST_SIZE;i++) 
+      for (;i<_TEST_SIZE_LIST;i++) 
       {
             char *text1 = malloc(sizeof(char)*strlen(basetext));
             strcpy(text1, basetext);

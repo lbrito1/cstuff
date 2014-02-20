@@ -1,5 +1,10 @@
 #include "linked_list.c"
-#include <stdint.h>
+#include <time.h>
+#include <stdlib.h>
+
+#if !defined _TEST_SIZE_MSORT && defined _DEBUGGING
+#define _TEST_SIZE_MSORT 10
+#endif
 
 
 void halve(linked_list* list, linked_list* left, linked_list* right);
@@ -12,19 +17,7 @@ element* mergesort(linked_list* list)
       
       if (list->head == NULL || list->head->next == NULL) return list->head;
       
-          halve(list, left, right);
-      
-      element* l, *r;
-      l = left->head;
-      r = right->head;
-      if (l!=NULL && r!=NULL) 
-      {
-            do {printf("\nL\t%d",*(int*)l->data);} while ((l=l->next)!=NULL);
-            printf("\n");
-            do {printf("\nR\t%d",*(int*)r->data);} while ((r=r->next)!=NULL);
-      }
-      
-  
+      halve(list, left, right);
       
       return merge(mergesort(left),mergesort(right), list->cmp);
 }
@@ -34,7 +27,7 @@ void halve(linked_list* list, linked_list* left, linked_list* right)
       element* middle = list->head;
       if (middle!=NULL) {
       int half = (int) ((list->size)/2.0f), i=0;
-      while (i++<half) middle = middle->next;
+      while (++i<half) middle = middle->next;
       element* middle_head = middle->next;
       middle->next = NULL;
       
@@ -51,26 +44,19 @@ element* merge(element* a, element* b, int (*cmp) (void*, void*))
       element* merged = c;
       while (a != NULL && b != NULL) 
       {
-            printf("\ncomparing %d and %d = %d",*(int*)a->data, *(int*)b->data,cmp(a,b));
-            if (cmp(a,b) > 0)
+            if (cmp(a->data, b->data) > 0)
             {
-                  printf("\tchose %d",*(int*)a->data);
                   c->next = a;
                   a = a->next;
             }
             else
             {
-            printf("\tchose %d",*(int*)b->data);
                   c->next = b;
                   b = b->next;
             }
             c = c->next;
       }
       c->next = (a == NULL) ? b : a;
-      
-      element* t = merged;
-      while ((t = t->next) != NULL) printf("\n\t%d",*(int*)t->data);
-      
       return merged->next;
 }
 
@@ -78,27 +64,24 @@ element* merge(element* a, element* b, int (*cmp) (void*, void*))
 int main()
 {
       linked_list* list = new_list(compare_integer);
-      int* x = malloc(sizeof(int));
-      int* y = malloc(sizeof(int));
-      int* w = malloc(sizeof(int));
       
-      *x = 10;
-      *y = 100;
-      *w = 0;
-            
-     
+      srand(time(NULL));
       
-      add(list, x);
-      add(list, y);
-      add(list, w);
-
-       //list->cmp(list->head->data, list->head->next->data);
+      int* x = malloc(sizeof(int)*_TEST_SIZE_MSORT);
+      
+      int i=0;
+      for (;i<_TEST_SIZE_MSORT;i++)
+      {
+            x[i] = rand();
+            add(list, &(x[i]));
+      }
       
       element* xx = list->head;
-      int i=0;
+      i=0;
       do { printf("\n[%d]\t%d",i++,*((int*)xx->data)); 
       } while ((xx=xx->next)!=NULL);
 
+      printf("\n\nSorted:");
       xx = mergesort(list);
       list->head = xx;
       i=0;
