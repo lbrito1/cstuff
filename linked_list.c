@@ -8,69 +8,96 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TRUE 1
-#define FALSE 0
-
 #ifndef TEST_SIZE
 #define TEST_SIZE 10
 #endif
+
+#define TRUE 1
+#define FALSE 0
 
 //======================
 //          Algorithm
 //======================
 
-typedef struct Element
+typedef struct element
 {
-      void *data_ptr;
-      struct Element *next;
-} Element;
+      void *data;
+      struct element *next;
+} element;
 
-int compare(void *data1, void *data2);
-
-Element *search(void *list_head, void *data);
-
-Element *new_element(void *data)
+typedef struct linked_list
 {
-      Element *e = (Element*) malloc(sizeof(Element));
-      e->data_ptr = data;
+      element *head;
+      element *tail;
+      unsigned size;
+      int (*cmp) (void*, void*);
+} linked_list;
+
+linked_list *new_list(int (*comparator) (void*, void*))
+{
+      linked_list *l = malloc(sizeof(linked_list));
+      l->size = 0;
+      l->cmp = comparator;
+}
+
+element *new_element(void *data)
+{
+      element *e = (element*) malloc(sizeof(element));
+      e->data = data;
       e->next = NULL;
 }
 
-int compare(void *data1, void *data2)
+int compare_string(void *data1, void *data2)
 {
       return (strcmp((char*) data1, (char*)data2) == 0 ? TRUE : FALSE);
 }
 
-void add(Element *list_head, void *data)
+int compare_integer(void *data1, void* data2)
 {
-      Element *e = list_head;
-      while (e->next != NULL) e = e->next;
-      Element *toadd = new_element(data);
-      e->next = toadd;
+      //printf("%d - %d = %d",( *((int*) data2) ),( *((int*) data1) ), ( *((int*) data2) - *((int*) data1) )  )  ;
+      return (( *((int*) data2) - *((int*) data1) ));
 }
 
-Element *search(void *list_head, void *data)
+void add(linked_list *list, void *data)
 {
-      Element *e = list_head;
-      Element *prev = e;
-      if (compare(data, e->data_ptr)) return NULL; // exception for list head
+      if (list->size == 0) 
+      {
+            list->head = new_element(data);
+            list->tail = list->head;
+      }
+      else
+      {
+            element *toadd = new_element(data);
+            list->tail->next = toadd;
+            list->tail = list->tail->next;
+      }
+      ++list->size;
+}
+
+element *search(linked_list *list, void *data)
+{
+      element *e = list->head;
+      element *prev = e;
       do
       {
-            if (compare(data, e->data_ptr)) return prev;
+            if (list->cmp(data, e->data)) return prev;
             prev = e;
       } while ((e = e->next) != NULL);
       return NULL;
 }
 
-int delete(Element *list_head, void *data)	
+int delete(linked_list *list, void *data)	
 {
-      Element *searched = search(list_head, data);
+      element *searched = search(list, data);
       if (searched) 
       {
-            Element *removed = searched->next;
-            searched->next = searched->next->next;
-            free(removed->data_ptr);
+            int ishead = list->cmp(searched->data, list->head->data);
+            element *removed = (ishead) ? searched : searched->next;
+            if (!ishead) searched->next = searched->next->next;
+            else list->head = list->head->next;
+            free(removed->data);
             free(removed);
+            --list->size;
             return TRUE;
       }
       else return FALSE;
@@ -80,10 +107,11 @@ int delete(Element *list_head, void *data)
 //          Tests
 //======================
 
-Element *build_list() 
+#ifdef DEBUGGING
+
+linked_list *build_list() 
 {	
-      char *head_data = "I'm the (permanent) list head. You can't delete me.";
-      Element *head = new_element(head_data);
+      linked_list *list = new_list(compare_string);
       char *basetext = "I'm element number ";
       int i=1;
       for (;i<TEST_SIZE;i++) 
@@ -93,58 +121,69 @@ Element *build_list()
             char numb[10];
             sprintf(numb, "%d", i);
             strcat(text1, numb);
-            add(head, text1);
+            add(list, text1);
       }
       
-      return head;
+      return list;
 }
 
-void print_list(Element *head) 
+void print_list(linked_list *list) 
 {
-      printf("\n==============");
-      Element *e = head;
-      int i = 0;
-      do 
+      if (list->size == 0) 
       {
-            printf("\nList [%d]:\t%s",i++,(char**)e->data_ptr);
-      } while ((e = e->next) != NULL);
-      printf("\n==============\n");
+            printf("\nList empty.");
+      }
+      else 
+      {
+            printf("\n==============");
+            element *e = list->head;
+            int i = 0;
+            do 
+            {
+                  printf("\nList [%d]:\t%s",i++,(char**)e->data);
+            } while ((e = e->next) != NULL);
+            printf("\n==============\n");
+      }
 }
 
-void test_delete(Element *head, int eln) 
+void test_delete(linked_list *list, int eln) 
 {
       char data[20];
       sprintf(data, "I'm element number %d", eln);
-      if (delete(head, data)) printf("\nSuccessfully deleted element #%d",eln); 
+      if (delete(list, data)) printf("\nSuccessfully deleted element #%d, %d elems in list",eln,list->size); 
+      else printf("\nElem #%d not found",eln);
 }
 
-void test_add(Element *head, int eln)
+void test_add(linked_list *list, int eln)
 { 
       char *data = malloc(sizeof(char)*50);
       sprintf(data, "I'm NEW element number %d", eln);
-      add(head, data); 
-      printf("\nSuccessfully added NEW element #%d",eln); 
+      add(list, data); 
+      printf("\nSuccessfully added NEW element #%d, %d elems in list",eln,list->size); 
 }
 
 int main()
 {
-      Element *head = build_list();
+      linked_list *list = build_list();
       
-      print_list(head);
-      test_delete(head, 1);
-      test_delete(head, 2);
-      test_delete(head, 3);
-      test_delete(head, 4);
-      test_delete(head, 5);
-      test_delete(head, 6);
-      test_delete(head, 7);
-      test_delete(head, 8);
-      test_delete(head, 9);
-      print_list(head);
-      test_add(head, 1337);
-      test_delete(head, 2);
-      test_add(head, 98);
-      print_list(head);
+      print_list(list);
+      test_delete(list, 1);
+      test_delete(list, 2);
+      test_delete(list, 3);
+      test_delete(list, 4);
+      test_delete(list, 5);
+      test_delete(list, 6);
+      test_delete(list, 7);
+      test_delete(list, 8);
+      test_delete(list, 9);
+      print_list(list);
+      test_add(list, 1337);
+      print_list(list);
+      test_delete(list, 2);
+      test_add(list, 98);
+      print_list(list);
       
       return 0;
 }
+
+#endif
