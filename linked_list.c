@@ -54,7 +54,6 @@ int compare_string(void *data1, void *data2)
 
 int compare_integer(void *data1, void* data2)
 {
-      //printf("%d - %d = %d",( *((int*) data2) ),( *((int*) data1) ), ( *((int*) data2) - *((int*) data1) )  )  ;
       return (( *((int*) data2) - *((int*) data1) ));
 }
 
