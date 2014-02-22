@@ -1,6 +1,5 @@
 #include "vector.c"
-#include <stdio.h>
-#include <stdlib.h>
+
 
 typedef struct graph {
       vector* nodes;
@@ -63,15 +62,14 @@ int remove_node(graph* g, node* n)
 {
       // remove edges leading to and from node
       int i;
-      printf("%d",g->edges->used);
-    /*  for (i=0; i<g->edges->used; i++)
+      for (i=0; i<g->edges->used; i++)
       {
-          /*  node* to = ((edge*) (g->edges->array[i]))->to;
+            node* to = ((edge*) (g->edges->array[i]))->to;
             node* from = ((edge*) (g->edges->array[i]))->to;
             if (compare_node(n, to) | compare_node(n,from))
                   remove_edge(g, g->edges->array[i]);
       }
-      */
+      
       return 0;
 }
 
@@ -80,8 +78,8 @@ int main()
       int x = 11;
       node* n = new_node(&x);
       graph* g = new_graph(5, sizeof(int), compare_integer);
-      //printf("%d",g->edges->used);
-      //add_node(g,n);
-      //remove_node(g,n);
+      printf("%d",g->edges->used);
+      add_node(g,n);
+      remove_node(g,n);
       return 0;
 }

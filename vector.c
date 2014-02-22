@@ -26,7 +26,7 @@ typedef struct
 {
       void** array;
       size_t type_size;
-      unsigned size;
+      size_t size;
       unsigned used;
       int (*cmp) (void*, void*);
 } vector;
@@ -39,9 +39,9 @@ typedef struct
  *  @param [in] comparator comparator function
  *  @return pointer to created vector
  */
-vector* new_vector(unsigned s, size_t ts, int (*comparator) (void*, void*))
+vector* new_vector(size_t s, size_t ts, int (*comparator) (void*, void*))
 {
-      vector* v = malloc(sizeof(vector*));
+      vector* v = malloc(sizeof(vector));
       v->used = 0;
       v->size = s;
       v->type_size = ts;
@@ -146,6 +146,9 @@ void print_vector(vector *v)
 int main()
 {
       vector* v = new_vector(2, sizeof(int), compare_integer);
+      vector* q = new_vector(2, sizeof(int), compare_integer);
+      
+     
       static int y[] = {10,31,99,3,7,89,2,3};
       static int z = 888;
       add_all(v, (void**) y, 8);
