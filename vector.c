@@ -41,7 +41,7 @@ typedef struct
  */
 vector* new_vector(unsigned s, size_t ts, int (*comparator) (void*, void*))
 {
-      vector* v = malloc(sizeof(vector));
+      vector* v = malloc(sizeof(vector*));
       v->used = 0;
       v->size = s;
       v->type_size = ts;
@@ -132,7 +132,7 @@ int delete(vector* v, void* data)
       if (idx < 0) return idx;
       free(v->array[idx]);
       v->array[idx] = v->array[--v->used];
-      return 0;
+      return v->used;
 }
 
 #ifdef _DEBUGGING
@@ -147,7 +147,9 @@ int main()
 {
       vector* v = new_vector(2, sizeof(int), compare_integer);
       static int y[] = {10,31,99,3,7,89,2,3};
+      static int z = 888;
       add_all(v, (void**) y, 8);
+      add(v, &z);
       delete(v, &y[0]);
       print_vector(v);
       
