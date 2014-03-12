@@ -1,5 +1,8 @@
 #include "vector.c"
 
+static int REMOVED = -1;
+static int UNMARKED = 0;
+static int VISITED = 1;
 
 typedef struct graph {
       vector* nodes;
@@ -10,6 +13,7 @@ typedef struct graph {
 
 typedef struct node {
       int id;
+      int status;
       void* data;
 } node;
 
@@ -39,12 +43,12 @@ graph* new_graph(unsigned size, size_t type_size, int (*comparator) (void*,void*
       return g;
 }
 
-
 node* new_node(void* data)
 {
       node* n = malloc(sizeof(node));
       n->data = data;
       n->id = -1;
+      n->status = 0;
 }
 
 void add_node(graph* g, node* n)
@@ -60,6 +64,8 @@ int remove_edge(graph* g, edge* e)
 
 int remove_node(graph* g, node* n)
 {
+      n->status = REMOVED;
+
       // remove edges leading to and from node
       int i;
       for (i=0; i<g->edges->used; i++)
@@ -73,13 +79,31 @@ int remove_node(graph* g, node* n)
       return 0;
 }
 
+edge* new_edge(node* from, node* to, double cost)
+{
+      edge* e = malloc(sizeof(edge));
+      e->from = from;
+      e->to = to;
+      e->cost = cost;
+      e->id = -1;
+}
+
+int add_edge(graph* g, edge* e)
+{
+      e->id = g->n_edges++;
+      add(g->edges, e);
+}
+
 int main()
 {
-      int x = 11;
+      static int x = 11;
+      static int y = 9;
       node* n = new_node(&x);
+      node* m = new_node(&y);
+      edge* e = new_edge(n, m, 1.0);
       graph* g = new_graph(5, sizeof(int), compare_integer);
-      printf("%d",g->edges->used);
       add_node(g,n);
-      remove_node(g,n);
+      add_node(g,m);
+      add_edge(g,e);
       return 0;
 }
