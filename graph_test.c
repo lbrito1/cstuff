@@ -65,15 +65,19 @@ int main()
       sendto(v1, 0.9, 0.1);
       sendto(v2, 0.4, 0.9);
       sendto(v3, 0.6, 0.3);
-      sendto(v4, 0.7, 0.2);
-      sendto(v5, 0.6, 0.9);
+      sendto(v4, 0.7, 0.1);
+      sendto(v5, 0.1, 0.3);
       
       add_edge(g, v1, v2);
+      add_edge(g, v1, v3);
+      add_edge(g, v2, v3);
       add_edge(g, v3, v4);
+      add_edge(g, v5, v3);
+      add_edge(g, v5, v2);
       
       // testing
       
-      burger* bgfx = create(48,48);
+      burger* bgfx = create(32,32);
       
       print_graph(g,bgfx);
       
