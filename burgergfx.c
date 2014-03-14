@@ -72,25 +72,28 @@ void put_line(burger* bgfx, double dx1, double dy1, double dx2, double dy2)
       int y2 = get_norm_y(bgfx, dy2);
    
       int i = 0;
-      if (x1>x2) {
-            i = x2;
-            x2 = x1;
-            x1 = i;
-      }   
-      
-       if (y1>y2) {
-            i = y2;
-            y2 = y1;
-            y1 = i;
-      }   
 
+
+      
       float a = (float)(y2-y1)/(float)(x2-x1);
-   
-      for (i=x1; i<x2 ;i++)
+      
+      if (x1<x2) 
       {
-            int x = i - x1;
-            int y = (int) (a*x) + y1;
-            put_burger_int(bgfx, i, y, '*');
+            for (i=x1; i<x2 ;i++)
+            {
+                  int x = i - x1;
+                  int y = (int) (a*x) + (y1<y2 ? y2 : y1);
+                  put_burger_int(bgfx, i, y, '.');
+            }
+      }
+      else 
+      {
+            for (i=x2; i<x1; i++)
+            {
+                  int x = i - x2;
+                  int y = (int) (a*x) + (y1<y2 ? y2 : y1);
+                  put_burger_int(bgfx, i, y, '.');
+            }
       }
 }
 
