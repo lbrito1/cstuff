@@ -10,6 +10,7 @@ typedef struct vertex
 {
       unsigned long id;
       int status;
+      double x,y;
       void* data;
 } vertex;
 
@@ -47,15 +48,22 @@ vertex* new_vertex(unsigned long id, void* data)
       v->data = data;
       v->status = UNMARKED;
       v->id = id;
+      v->x = 0.0;
+      v->y = 0.0;
+      return v;
 }
 
 vertex* add_vertex(graph* g, void* data) 
 {
       vertex* v;
-      
-      if (g->v_counter < g->max_vertices) 
+      int pos = g->v_counter;
+      if (pos < g->max_vertices) 
       {
-            v = (g->vertices[g->v_counter] = new_vertex(g->v_counter, data));
+            v = (g->vertices[pos] = new_vertex(pos, data));
+            
+            //prepare adjlist
+            add((g->adj_list[pos]), NULL);
+            
             g->v_counter++;
       }
       else

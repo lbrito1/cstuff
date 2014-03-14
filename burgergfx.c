@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 typedef struct
 {
@@ -20,12 +21,12 @@ burger* create(int w, int h)
 
 int get_norm_x(burger* b, double x)
 {
-      return (int) (b->w*x);
+      return (int) round(b->w*x);
 }
 
 int get_norm_y(burger* b, double y)
 {
-      return (int) (b->h*y);
+      return (int) round(b->h*y);
 }
 
 void clean_burger(burger* b)
@@ -48,23 +49,13 @@ void put_burger_int(burger* b, int x, int y, char c)
 
 void print_burger(burger* bgfx)
 {
-      int i = 0, j = 0,z=0;
-      for (;i<bgfx->h;i++)
+      
+      int i = 0, j = 0;
+      printf("\n");
+      for (;i<(bgfx->w/2)-2;i++) printf("  ");
+      printf("Burger\n");
+      for (i=0;i<bgfx->h;i++)
       {
-            if (i==0) 
-            {
-                  z = 0;
-                  printf("/"); 
-                  for (;z<bgfx->w;z++) printf("--");
-                  printf("\\"); 
-            }
-            else if (i==bgfx->h-1)
-            {
-                  z = 0;
-                  printf("\\"); 
-                  for (;z<bgfx->w;z++) printf("--");
-                  printf("/"); int z = 0;
-            }
             for (j=0;j<bgfx->w;j++)
             {
                   printf("%c ",bgfx->burger_matrix[i+(j*bgfx->w)]);
@@ -73,19 +64,32 @@ void print_burger(burger* bgfx)
       }
 }
 
-void put_line(burger* bgfx, double dx1, double dx2, double dy1, double dy2)
+void put_line(burger* bgfx, double dx1, double dy1, double dx2, double dy2)
 {
       int x1 = get_norm_x(bgfx, dx1);
       int y1 = get_norm_y(bgfx, dy1);
-      int x2 = get_norm_x(bgfx, dy1);
+      int x2 = get_norm_x(bgfx, dx2);
       int y2 = get_norm_y(bgfx, dy2);
-      
-
-      float a = (float)(y1-y2)/(float)(x1-x2);
+   
       int i = 0;
+      if (x1>x2) {
+            i = x2;
+            x2 = x1;
+            x1 = i;
+      }   
+      
+       if (y1>y2) {
+            i = y2;
+            y2 = y1;
+            y1 = i;
+      }   
+
+      float a = (float)(y2-y1)/(float)(x2-x1);
+   
       for (i=x1; i<x2 ;i++)
       {
-            int y = (int) (a*i) + y1;
+            int x = i - x1;
+            int y = (int) (a*x) + y1;
             put_burger_int(bgfx, i, y, '*');
       }
 }
@@ -93,16 +97,25 @@ void put_line(burger* bgfx, double dx1, double dx2, double dy1, double dy2)
 /*
 int main() 
 {
-      burger* b = create(32,32);
-      clean_burger(b);
-      put_line(b, 0.1,0.1, 0.9,0.7);
-      put_burger(b,0.05,0.5,'c');
+      burger* b = create(30,30);
+      
+      double x1, x2, y1, y2;
+      x1 = 0.9;
+      y1= 0.9;
+      x2 = 0.1;
+      y2 = 0.1;
+      
+      put_line(b, x1,y1,x2,y2);
+      
+      put_burger(b,x1,y1,'F');
+      put_burger(b,x2,y2,'T');
+
       print_burger(b);
       return 0;
 }
-
-
 */
+
+
 
 
 

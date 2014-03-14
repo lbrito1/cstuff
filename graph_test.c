@@ -1,25 +1,42 @@
 #include "graph_adj.c"
 #include "burgergfx.c"
 
-typedef struct vertex_pt {
-      vertex* v;
-      double x,y;
-      char c;
-} vertex_pt;
-
-vertex_pt* create_pt(vertex* v, double x, double y) 
+void sendto(vertex* v, double x, double y)
 {
-      vertex_pt* pt = malloc(sizeof(vertex_pt));
-      pt->v = v;
-      pt->x = x;
-      pt->y = y;
-      pt->c = *((char*) v->data);
-      return pt;
+      v->x = x; v->y = y;
 }
 
-void add_pt(burger* b, vertex_pt* pt) 
+void draw_vertices(graph* g, burger* b)
 {
-      put_burger(b, pt->x, pt->y, pt->c);
+      int i;
+      for (i=0; i<g->v_counter; i++)
+      {
+            vertex* v = g->vertices[i];
+            put_burger(b, v->x, v->y, *((char*) v->data));
+      }
+}
+
+void draw_edges(graph* g, burger* b)
+{
+       int i;
+      for (i=0; i<g->v_counter; i++)
+      {
+            element* head = g->adj_list[i]->head;
+             while (head != NULL) 
+             {
+                  vertex* from = g->vertices[i];
+                  if (from != NULL) 
+                  {
+                        void* dptr = head->data;
+                        if (dptr != NULL) 
+                        {
+                              vertex* to = (vertex*) dptr;
+                              if (to != NULL) put_line(b, from->x, from->y, to->x, to->y);
+                        }
+                  }
+                  head = head->next;
+            }
+      }
 }
 
 int main()
@@ -33,19 +50,21 @@ int main()
       vertex* v2 = add_vertex(g, &mydata2);
       vertex* v3 = add_vertex(g, &mydata3);
       
+      sendto(v1, 0.1, 0.1);
+      sendto(v2, 0.4, 0.9);
+      sendto(v3, 0.6, 0.3);
+      
       add_edge(g, v1, v2);
       
       // testing
       
-      burger* bgfx = create(16,16);
+      burger* bgfx = create(32,32);
       
-      vertex_pt* pt1 = create_pt(v1, 0.1, 0.1);
-      vertex_pt* pt2 = create_pt(v2, 0.5, 0.1);
-      vertex_pt* pt3 = create_pt(v3, 0.1, 0.5);
+      clean_burger(bgfx);
+
+      draw_edges(g, bgfx);
+      draw_vertices(g, bgfx);
       
-      add_pt(bgfx, pt1);
-      add_pt(bgfx, pt2);
-      add_pt(bgfx, pt3);
       
       print_burger(bgfx);
       
