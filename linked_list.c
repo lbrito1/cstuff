@@ -38,6 +38,7 @@ linked_list *new_list(int (*comparator) (void*, void*))
       linked_list *l = malloc(sizeof(linked_list));
       l->size = 0;
       l->cmp = comparator;
+      return l;
 }
 
 element *new_element(void *data)
@@ -45,6 +46,7 @@ element *new_element(void *data)
       element *e = (element*) malloc(sizeof(element));
       e->data = data;
       e->next = NULL;
+      return e;
 }
 
 int compare_string(void *data1, void *data2)
