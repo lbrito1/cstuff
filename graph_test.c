@@ -1,4 +1,4 @@
-#include "graph_adj.c"
+#include "graph.c"
 #include "burgergfx.c"
 
 void sendto(vertex* v, double x, double y)
@@ -80,6 +80,8 @@ int main()
       burger* bgfx = create(32,32);
       
       print_graph(g,bgfx);
+      
+      graph* cg = build_complete_graph(100);
       
       return 0;
 }
