@@ -29,6 +29,16 @@ int compare_v(void* v1, void* v2)
       return ((((vertex*) v1)->id) == (((vertex*) v2)->id));
 }
 
+int visit(graph* g, int vid) 
+{
+      if (g->vertices[vid]->status == UNMARKED) 
+      {
+            g->vertices[vid]->status = MARKED;
+            return TRUE;
+      }
+      return FALSE;
+}
+
 graph* new_graph(int n_vertices)
 {
       graph* g_p = malloc(sizeof(graph));

@@ -16,6 +16,17 @@ void draw_vertices(graph* g, burger* b)
       }
 }
 
+void draw_vertex_status(graph* g, burger* b)
+{
+      int i;
+      for (i=0; i<g->v_counter; i++)
+      {
+            vertex* v = g->vertices[i];
+            char c = v->status == UNMARKED ? 'u' : 'M';
+            put_burger(b, v->x, v->y, c);
+      }
+}
+
 void draw_edges(graph* g, burger* b)
 {
        int i;
@@ -44,6 +55,13 @@ void print_graph(graph* g, burger* bgfx)
       clean_burger(bgfx);
       draw_edges(g, bgfx);
       draw_vertices(g, bgfx);
+      print_burger(bgfx);
+}
+
+void print_vertex_status(graph* g, burger* bgfx)
+{
+      clean_burger(bgfx);
+      draw_vertex_status(g, bgfx);
       print_burger(bgfx);
 }
 
@@ -82,6 +100,10 @@ int main()
       print_graph(g,bgfx);
       
       graph* cg = build_complete_graph(100);
+      
+      visit(cg, 50);
+      
+      print_vertex_status(cg, bgfx);
       
       return 0;
 }

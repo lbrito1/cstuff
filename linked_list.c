@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "comparators.c"
 
 #if !defined _TEST_SIZE_LIST && defined _DEBUGGING
 #define _TEST_SIZE_LIST 10
@@ -47,16 +48,6 @@ element *new_element(void *data)
       e->data = data;
       e->next = NULL;
       return e;
-}
-
-int compare_string(void *data1, void *data2)
-{
-      return (strcmp((char*) data1, (char*)data2) == 0 ? TRUE : FALSE);
-}
-
-int compare_integer(void *data1, void* data2)
-{
-      return (( *((int*) data2) - *((int*) data1) ));
 }
 
 void add(linked_list *list, void *data)
