@@ -55,7 +55,7 @@ void heapsort(heap* h)
 {
       build_heap(h);
       int i;
-      for (i = h->heap_size; i>2; i--)
+      for (i = h->heap_size; i>1; i--)
       {
             void* temp = get(h,1);
             set(h,1,get(h,i));
