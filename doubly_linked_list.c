@@ -1,8 +1,7 @@
-//======================
-//      Linked list
-// CC-BY Leonardo Brito
-// lbrito@gmail.com
-//======================
+/**
+ *  @file doubly_linked_list.c
+ *  @brief Brief
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,10 +14,6 @@
 
 #define TRUE 1
 #define FALSE 0
-
-//======================
-//          Algorithm
-//======================
 
 typedef struct d_element
 {
@@ -34,6 +29,12 @@ typedef struct d_linked_list
       int (*cmp) (void*, void*);
 } d_linked_list;
 
+/**
+ *  @brief create a new doubly linked list
+ *  
+ *  @param [in] comparator
+ *  @return
+ */
 d_linked_list *new_list(int (*comparator) (void*, void*))
 {
       d_linked_list *l = malloc(sizeof(d_linked_list));
@@ -42,6 +43,12 @@ d_linked_list *new_list(int (*comparator) (void*, void*))
       return l;
 }
 
+/**
+ *  @brief create a new d_element
+ *  
+ *  @param [in] data 
+ *  @return 
+ */
 d_element *new_d_element(void *data)
 {
       d_element *e = (d_element*) malloc(sizeof(d_element));
@@ -51,6 +58,12 @@ d_element *new_d_element(void *data)
       return e;
 }
 
+/**
+ *  @brief add data to list
+ *  
+ *  @param [in] list 
+ *  @param [in] data 
+ */
 void add(d_linked_list *list, void *data)
 {
       if (list->size == 0) 
@@ -68,6 +81,13 @@ void add(d_linked_list *list, void *data)
       ++list->size;
 }
 
+/**
+ *  @brief search for data in list
+ *  
+ *  @param [in] list
+ *  @param [in] data
+ *  @return searched element
+ */
 d_element *search(d_linked_list *list, void *data)
 {
       d_element *e = list->head;
@@ -78,6 +98,13 @@ d_element *search(d_linked_list *list, void *data)
       return NULL;
 }
 
+/**
+ *  @brief Brief
+ *  
+ *  @param [in] list Parameter_Description
+ *  @param [in] data Parameter_Description
+ *  @return Return_Description
+ */
 int delete(d_linked_list *list, void *data)	
 {
       d_element *searched = search(list, data);
@@ -110,7 +137,7 @@ int delete(d_linked_list *list, void *data)
                         list->tail = NULL;
                   }
             }
-            //free(searched->data);
+            free(searched->data);
             free(searched);
             --list->size;
             return TRUE;
