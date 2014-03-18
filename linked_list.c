@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "comparators.c"
 
 #if !defined _TEST_SIZE_LIST && defined _DEBUGGING
