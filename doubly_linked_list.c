@@ -99,11 +99,11 @@ d_element *search(d_linked_list *list, void *data)
 }
 
 /**
- *  @brief Brief
+ *  @brief delete data from list
  *  
- *  @param [in] list Parameter_Description
- *  @param [in] data Parameter_Description
- *  @return Return_Description
+ *  @param [in] list 
+ *  @param [in] data 
+ *  @return TRUE if data was found & deleted, FALSE otherwise
  */
 int delete(d_linked_list *list, void *data)	
 {
@@ -145,10 +145,6 @@ int delete(d_linked_list *list, void *data)
       else return FALSE;
 }
 
-//======================
-//          Tests
-//======================
-
 #ifdef _DEBUGGING
 
 d_linked_list *build_list() 
@@ -158,7 +154,7 @@ d_linked_list *build_list()
       int i=1;
       for (;i<_TEST_SIZE_LIST;i++) 
       {
-            char *text1 = malloc(sizeof(char)*strlen(basetext));
+            char *text1 = malloc(sizeof(char)*(strlen(basetext)+10));
             strcpy(text1, basetext);
             char numb[10];
             sprintf(numb, "%d", i);
