@@ -85,6 +85,13 @@ edge* new_edge(vertex* from, vertex* to, int cost)
       return e;
 }
 
+edge* get_edge(graph* g, int from, int to)
+{
+      element* e = g->adj_list[from]->head;
+      while (e != NULL) if (((((edge*) e->data)->to)->id) == to) return ((edge*) e->data);
+      return NULL;
+}
+
 vertex* add_vertex(graph* g, void* data) 
 {
       vertex* v;
@@ -109,6 +116,7 @@ vertex* add_vertex(graph* g, void* data)
 
 void add_edge(graph* g, vertex* vf, vertex* vt, int cost)
 {
+      //printf("\n%d,%d",vf->id,vt->id);
       add((g->adj_list[vf->id]), new_edge(vf,vt,cost));
 }
 
