@@ -88,7 +88,7 @@ edge* new_edge(vertex* from, vertex* to, int cost)
 edge* get_edge(graph* g, int from, int to)
 {
       element* e = g->adj_list[from]->head;
-      while (e != NULL) if (((((edge*) e->data)->to)->id) == to) return ((edge*) e->data);
+      while ((e=e->next) != NULL) if (((((edge*) e->data)->to)->id) == to) return ((edge*) e->data);
       return NULL;
 }
 

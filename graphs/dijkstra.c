@@ -39,12 +39,13 @@ int* dijkstra(graph* g, int from, int to)
             
                   int ndist = dist[u] + uv->cost;
                   
-                  if (ndist<dist[v]) //relax edge
+                  if ((ndist>=0) && (ndist<dist[v])) //relax edge
                   {
                         dist[v] = ndist;
                         previous[v] = u;
                         min->k = dist[v];
                         push(minheap,min);
+                  }
             }
       }
       
@@ -56,7 +57,7 @@ int main()
       graph* g = build_complete_graph(25);
       int* x = dijkstra(g,10,20);
       int i;
-      for (i=0; i<g->v_counter; i++) printf("\n%d",x[i]);
+      for (i=0; i<g->v_counter; i++) printf("\n%d\t%d",i,x[i]);
             
             
       
