@@ -1,20 +1,11 @@
 #include <limits.h>
 
 #include "../data_structures/linked_list.c"
+#include "vertex.c"
 
 #define DIRECTED 0
 #define UNDIRECTED 1
 
-#define UNMARKED 0
-#define MARKED 1
-
-typedef struct vertex
-{
-      unsigned long id;
-      int status;
-      double x,y;
-      void* data;
-} vertex;
 
 typedef struct edge
 {
@@ -33,11 +24,17 @@ typedef struct al_graph
       void (*printvert) (void*);
 } al_graph;
 
-int compare_v(void* v1, void* v2) 
+int get_al_nv(void* g)
 {
-      if ((v1 == NULL) | (v2 == NULL)) return -1;
-      return ((((vertex*) v1)->id) == (((vertex*) v2)->id));
+      return ((al_graph*) g)->nv;
 }
+
+vertex** get_al_vlist(void* g)
+{
+      return ((al_graph*) g)->vertices;
+}
+
+
 
 int compare_e(void* e1, void* e2)
 {
@@ -70,16 +67,6 @@ al_graph* new_al_graph(int n_vertices, int directed)
       return g_p;
 }
 
-vertex* new_vertex(unsigned long id, void* data)
-{
-      vertex* v = malloc(sizeof(vertex));
-      v->data = data;
-      v->status = UNMARKED;
-      v->id = id;
-      v->x = 0.0;
-      v->y = 0.0;
-      return v;
-}
 
 edge* new_edge(vertex* from, vertex* to, int cost)
 {
