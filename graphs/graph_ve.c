@@ -27,6 +27,16 @@ int compare_v(void* v1, void* v2)
       return ((((vertex*) v1)->id) == (((vertex*) v2)->id));
 }
 
+int visit(vertex* v) 
+{
+      if (v->status == UNMARKED) 
+      {
+            v->status = MARKED;
+            return TRUE;
+      }
+      return FALSE;
+}
+
 typedef struct edge
 {
       vertex* from, *to;

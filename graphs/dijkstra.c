@@ -43,7 +43,7 @@ int* dijkstra(graph* g, int from, int to)
       while ((min = pop(minheap)) != NULL)
       {
             int u = *((int*) min->v);
-            visit(g,u);
+            visit(g->vertices[u]);
             
             element* head = g->adj_list[u]->head;
             

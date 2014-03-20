@@ -96,3 +96,11 @@ graph* build_matrix_graph(int nvert)
       
       return g;
 }
+
+void print_vertices(graph* g)
+{
+      int i=0;
+      printf("\nCurrently %lu elements",g->nv);
+      printf("\n[ID]\tDATA\n=================");
+      for (;i<g->nv;i++) printf("\n[%lu]\t", g->vertices[i]->id);
+}

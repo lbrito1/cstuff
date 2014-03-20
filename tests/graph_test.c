@@ -1,12 +1,13 @@
 #include "../graphs/graph.c"
 #include "../utils/burgergfx.c"
+#include "../utils/debug.c"
 
 void sendto(vertex* v, double x, double y)
 {
       v->x = x; v->y = y;
 }
 
-void draw_vertices(al_graph* g, burger* b)
+void draw_vertices(graph* g, burger* b)
 {
       int i;
       for (i=0; i<g->nv; i++)
@@ -16,7 +17,7 @@ void draw_vertices(al_graph* g, burger* b)
       }
 }
 
-void draw_vertex_status(al_graph* g, burger* b)
+void draw_vertex_status(graph* g, burger* b)
 {
       int i;
       for (i=0; i<g->nv; i++)
@@ -27,7 +28,7 @@ void draw_vertex_status(al_graph* g, burger* b)
       }
 }
 
-void draw_edges(al_graph* g, burger* b)
+void draw_edges(graph* g, burger* b)
 {
       int i;
       for (i=0; i<g->nv; i++)
@@ -57,7 +58,7 @@ void draw_edges(al_graph* g, burger* b)
       }
 }
 
-void print_graph(al_graph* g, burger* bgfx)
+void print_graph(graph* g, burger* bgfx)
 {
       clean_burger(bgfx);
       draw_edges(g, bgfx);
@@ -65,17 +66,17 @@ void print_graph(al_graph* g, burger* bgfx)
       print_burger(bgfx);
 }
 
-void print_vertex_status(al_graph* g, burger* bgfx)
+void print_vertex_status(graph* g, burger* bgfx)
 {
       clean_burger(bgfx);
       draw_vertex_status(g, bgfx);
       print_burger(bgfx);
 }
 
-#ifdef _DEBUG_G
+#ifdef _DEBUG
 int main()
 {
-      al_graph* g = new_al_graph(10);
+      graph* g = new_graph(10, UNDIRECTED);
       char mydata = 'A';
       char mydata2 = 'B';
       char mydata3 = 'C';
@@ -101,15 +102,19 @@ int main()
       add_edge(g, v5, v3, 1);
       add_edge(g, v5, v2, 1);
       
+      edge_iter* it = new_edge_it(g,v1);
+      edge* next = NULL;
+      
+      while ((next = next_edge(it)) != NULL) DBG("\n%d\tE(%lu,%lu) = %d",it->idx,next->from->id,next->to->id,next->cost ) ;
+      
+      
       // testing
       
       burger* bgfx = create(32,32);
       
-      print_al_graph(g,bgfx);
+      print_graph(g,bgfx);
       
-      al_graph* cg = build_complete_al_graph(100);
-      
-      visit(cg, 50);
+      graph* cg = build_complete_graph(100);
       
       print_vertex_status(cg, bgfx);
       
