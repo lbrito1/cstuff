@@ -25,6 +25,7 @@ typedef struct edge
 typedef struct graph
 {
       vertex** vertices;
+      int directed;
       unsigned long max_vertices;
       unsigned long n_edges;
       unsigned long v_counter;
@@ -52,9 +53,10 @@ int visit(graph* g, int vid)
       return FALSE;
 }
 
-graph* new_graph(int n_vertices)
+graph* new_graph(int n_vertices, int directed)
 {
       graph* g_p = malloc(sizeof(graph));
+      g_p->directed = directed;
       g_p->max_vertices = n_vertices;
       g_p->vertices = malloc(sizeof(vertex*)*g_p->max_vertices);
       g_p->v_counter = 0;
@@ -107,7 +109,7 @@ vertex* add_vertex(graph* g, void* data)
       }
       else
       {
-            // grow/error
+            return NULL;
       }
       
       return v;
@@ -116,8 +118,8 @@ vertex* add_vertex(graph* g, void* data)
 
 void add_edge(graph* g, vertex* vf, vertex* vt, int cost)
 {
-      //printf("\n%d,%d",vf->id,vt->id);
       add((g->adj_list[vf->id]), new_edge(vf,vt,cost));
+      if (g->directed == UNDIRECTED) add((g->adj_list[vt->id]), new_edge(vt,vf,cost)); 
 }
 
 //    tests
