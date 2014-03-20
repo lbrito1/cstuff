@@ -121,18 +121,6 @@ void* pop_at(heap* h, int pos)
 }
 
 
-/**
- *  @brief Brief
- *  
- *  @param [in] h      Parameter_Description
- *  @param [in] pos    Parameter_Description
- *  @param [in] newval Parameter_Description
- *  @return Return_Description
- */
-void update(heap* h, int pos)
-{
-      heapify(h, pos);
-}
 
 /**
  *  @brief Pushes value onto heap
@@ -143,16 +131,32 @@ void update(heap* h, int pos)
  */
 int push(heap* h, void* k)
 {
+      if (k==NULL) return FALSE;
       if (h->heap_size == h->array_size - 1) return FALSE;
       h->heap_size++; 
       
-      int i;
-      if (h->order == ORD_ASC)
-            for (i = h->heap_size; i>1 && h->cmp(h->array[PARENT(i)], k) < 0; i = PARENT(i)) h->array[i] = h->array[PARENT(i)];
-      else if (h->order == ORD_DES)
-            for (i = h->heap_size; i>1 && h->cmp(h->array[PARENT(i)], k) > 0; i = PARENT(i)) h->array[i] = h->array[PARENT(i)];
+      int i = h->heap_size;
+      if (i>1) { 
+            if (h->order == ORD_ASC) 
+                  for (i = h->heap_size; i>1 && h->cmp(h->array[PARENT(i)], k) < 0; i = PARENT(i)) h->array[i] = h->array[PARENT(i)];
+            else if (h->order == ORD_DES) 
+                  for (i = h->heap_size; i>1 && h->cmp(h->array[PARENT(i)], k) > 0; i = PARENT(i)) h->array[i] = h->array[PARENT(i)];
+      }
       
       h->array[i] = k;
       
       return TRUE;
+}
+
+/**
+ *  @brief Brief
+ *  
+ *  @param [in] h      Parameter_Description
+ *  @param [in] pos    Parameter_Description
+ *  @param [in] newval Parameter_Description
+ *  @return Return_Description
+ */
+void update(heap* h, int pos)
+{
+      push(h, pop_at(h, pos));
 }

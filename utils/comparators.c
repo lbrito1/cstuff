@@ -7,16 +7,18 @@
 #define ORD_ASC 0
 #define ORD_DES 1
 
-typedef struct {
+typedef struct kv {
       int k;
       void* v;
+      int (*cmp) (void*, void*);
 } kv;
 
-kv* new_kv(int ki, void* vi)
+kv* new_kv(int ki, void* vi, int (*comp) (void*, void*))
 {
       kv* a = malloc(sizeof(kv));
       a->k = ki;
       a->v = vi;
+      a->cmp = comp;
       return a;
 }
 
@@ -30,10 +32,20 @@ int compare_integer(void *data1, void* data2)
       return (( *((int*) data2) - *((int*) data1) ));
 }
 
-int compare_kv(void *data1, void* data2)
+int compare_kv(void* v1, void* v2)
 {
-      kv* kv1 = (kv*) data1;
-      kv* kv2 = (kv*) data2;
-      return (kv2->k - kv1->k);
+      if ((v1 == NULL) || (v2 == NULL)) return 0;
+      kv* kv1 = (kv*) v1;
+      kv* kv2 = (kv*) v2;
+      return kv1->cmp(kv1->v, kv2->v);
+      return 0;
+}
+
+kv* get_kv(void** array, int length, int key)
+{
+      int i;
+      kv* val = NULL;
+      for (i=0;i<length;i++) if ((array[i]!=NULL) && ((val = (kv*)array[i])->k == key )) return val;
+      return NULL;
 }
 

@@ -73,7 +73,7 @@ void print_vertex_status(graph* g, burger* bgfx)
       print_burger(bgfx);
 }
 
-#ifdef _DEBUG
+#ifdef _GRAPH_TEST_MAIN
 int main()
 {
       graph* g = new_graph(10, UNDIRECTED);
