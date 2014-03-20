@@ -6,20 +6,20 @@ void sendto(vertex* v, double x, double y)
       v->x = x; v->y = y;
 }
 
-void draw_vertices(graph* g, burger* b)
+void draw_vertices(al_graph* g, burger* b)
 {
       int i;
-      for (i=0; i<g->v_counter; i++)
+      for (i=0; i<g->nv; i++)
       {
             vertex* v = g->vertices[i];
             put_burger(b, v->x, v->y, *((char*) v->data));
       }
 }
 
-void draw_vertex_status(graph* g, burger* b)
+void draw_vertex_status(al_graph* g, burger* b)
 {
       int i;
-      for (i=0; i<g->v_counter; i++)
+      for (i=0; i<g->nv; i++)
       {
             vertex* v = g->vertices[i];
             char c = v->status == UNMARKED ? 'u' : 'M';
@@ -27,10 +27,10 @@ void draw_vertex_status(graph* g, burger* b)
       }
 }
 
-void draw_edges(graph* g, burger* b)
+void draw_edges(al_graph* g, burger* b)
 {
       int i;
-      for (i=0; i<g->v_counter; i++)
+      for (i=0; i<g->nv; i++)
       {
             element* head = g->adj_list[i]->head;
              while (head != NULL) 
@@ -45,7 +45,9 @@ void draw_edges(graph* g, burger* b)
                               vertex* to = e->to;
                               if (to != NULL && to!=from) 
                               {
-                                    printf("\n%d\t(%d,%d)\t@(%f,%f, %f,%f)",i,from->id,to->id,from->x,from->y,to->x,to->y);
+                                    #ifdef _DEBUG
+                                          printf("\n%d\t(%lu,%lu)\t@(%f,%f, %f,%f)",i,from->id,to->id,from->x,from->y,to->x,to->y);
+                                    #endif
                                     put_line(b, from->x, from->y, to->x, to->y);
                               }
                         }
@@ -55,7 +57,7 @@ void draw_edges(graph* g, burger* b)
       }
 }
 
-void print_graph(graph* g, burger* bgfx)
+void print_graph(al_graph* g, burger* bgfx)
 {
       clean_burger(bgfx);
       draw_edges(g, bgfx);
@@ -63,7 +65,7 @@ void print_graph(graph* g, burger* bgfx)
       print_burger(bgfx);
 }
 
-void print_vertex_status(graph* g, burger* bgfx)
+void print_vertex_status(al_graph* g, burger* bgfx)
 {
       clean_burger(bgfx);
       draw_vertex_status(g, bgfx);
@@ -73,7 +75,7 @@ void print_vertex_status(graph* g, burger* bgfx)
 #ifdef _DEBUG_G
 int main()
 {
-      graph* g = new_graph(10);
+      al_graph* g = new_al_graph(10);
       char mydata = 'A';
       char mydata2 = 'B';
       char mydata3 = 'C';
@@ -103,9 +105,9 @@ int main()
       
       burger* bgfx = create(32,32);
       
-      print_graph(g,bgfx);
+      print_al_graph(g,bgfx);
       
-      graph* cg = build_complete_graph(100);
+      al_graph* cg = build_complete_al_graph(100);
       
       visit(cg, 50);
       

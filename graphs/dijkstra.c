@@ -1,9 +1,10 @@
+#include "../utils/debug.c"
 #include "../tests/graph_test.c"
 #include "../data_structures/heap.c"
  
-int* dijkstra(graph* g, int from, int to)
+int* dijkstra(al_graph* g, int from, int to)
 {
-      int nv = g->v_counter;
+      int nv = g->nv;
       
       int* dist         = malloc(sizeof(int)*nv);
       int* previous     = malloc(sizeof(int)*nv);
@@ -26,12 +27,15 @@ int* dijkstra(graph* g, int from, int to)
             kv* a = new_kv(dist[i], (void*)x);
             push(minheap,a);
             
+            
+            #ifdef _DEBUG
             element* el = g->adj_list[i]->head;
             while ((el=el->next)!=NULL) 
             {
                   edge* ed = (edge*) el->data;
-                  printf("\n%d\tE(%d,%d) = %d",i,ed->from->id,ed->to->id,ed->cost ) ;
+                  DBG("\n%d\tE(%lu,%lu) = %d",i,ed->from->id,ed->to->id,ed->cost ) ;
             }
+            #endif
       }
       
       
@@ -39,23 +43,22 @@ int* dijkstra(graph* g, int from, int to)
       while ((min = pop(minheap)) != NULL)
       {
             int u = *((int*) min->v);
-            printf("\n\n===========\nChecking v[%d], HEAPSZ=%d\n---------\nCURRDIST = (",u,minheap->heap_size);
-            int qq = 0;
-            for(;qq<g->v_counter;qq++) printf("%d, ",dist[qq]);
-            printf(")\n");
             visit(g,u);
+            
             element* head = g->adj_list[u]->head;
             
-            printf("\nNEIGHBORS OF %d:\t",u);
-            while ((head = head->next) != NULL) printf(" %d,",((edge*)(head->data))->to->id);
-            printf("\n");
+            #ifdef _DEBUG
+                  DBG("\n\n===========\nChecking v[%d], HEAPSZ=%d\n---------\n",u,minheap->heap_size);
+                  DBG("\nNEIGHBORS OF %d:\t",u);
+                  while ((head = head->next) != NULL) DBG(" %lu,",((edge*)(head->data))->to->id);
+                  DBG("\n");
+            #endif
             
-            head = g->adj_list[u]->head;
-            
+            head = g->adj_list[u]->head;            
             while ((head = head->next) != NULL) 
             {
                   int v = ((edge*) (head->data))->to->id;
-                  printf("\nNeighbor %d",v);
+                  DBG("\nNeighbor %d",v);
                   
                   if (u!=v) {
                   
@@ -63,43 +66,36 @@ int* dijkstra(graph* g, int from, int to)
                   
                         int ndist = dist[u] + uv->cost;
                         
-                        printf("\t ndist= %d",ndist);
+                        DBG("\t ndist= %d",ndist);
                         
-                        if ((ndist>=0) && (ndist<dist[v])) //relax edge, check for overflow
+                        //relax edge
+                        if ((ndist>=0) && (ndist<dist[v])) 
                         {
-                              printf("\tprev dist = %d",dist[v]);
+                              DBG("\tprev dist = %d",dist[v]);
+                              
                               dist[v] = ndist;
                               previous[v] = u;
-                              
-                              
                               
                               if (minheap->heap_size>0) 
                               {
                                     kv* v_p = NULL;
-                                    int q;
-                                    for (q=1; q<=minheap->heap_size; q++) 
+                                    for (i=1; i<=minheap->heap_size; i++) 
                                     {
-                                          kv* candidate = (kv*) (minheap->array[q]);
+                                          kv* candidate = (kv*) (minheap->array[i]);
                                           
-                                          int val = (*(int*) candidate->v);
-                                          int key = candidate->k;
-                                          
-                                          printf("\nChkng KV=(dist = %d,id = %d)",key,val);
-                                          
-                                          if ( val == v ) 
+                                          if ( (*(int*) candidate->v) == v ) 
                                           {
-                                                printf("\tFound %d",val);
-                                                v_p = pop_at(minheap, q);
+                                                DBG("\tFound %d",(*(int*) candidate->v));
+                                                v_p = pop_at(minheap, i);
                                                 v_p->k = dist[v];
                                                 
                                                 push(minheap, v_p);
                                                 
-                                                q = minheap->heap_size+2;
+                                                i = minheap->heap_size+2;
                                           }
                                     }
                               }
                         }
-                  
                   }
             }
       }
@@ -109,7 +105,7 @@ int* dijkstra(graph* g, int from, int to)
 
 int main()
 {
-      graph* g = new_graph(10,UNDIRECTED);
+      al_graph* g = new_al_graph(10,UNDIRECTED);
       char mydata = '0';
       char mydata2 = '1';
       char mydata3 = '2';
@@ -145,11 +141,11 @@ int main()
       
       print_vertex_status(g, bgfx);
 
-      printf("\nPrevious\n===============\n");
+      DBG("\nPrevious\n===============\n");
       int i;
-      for (i=0; i<g->v_counter; i++)
+      for (i=0; i<g->nv; i++)
       {
-            printf("\nvert[%d]\t%d",i,d[i]);
+            DBG("\nvert[%d]\t%d",i,d[i]);
       }
       
       return 0;
