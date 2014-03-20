@@ -8,7 +8,7 @@ int* dijkstra(graph* g, int from, int to)
       
       int* dist         = malloc(sizeof(int)*nv);
       int* previous     = malloc(sizeof(int)*nv);
-      heap* minheap = new_heap(nv, ORD_ASC, compare_kv);
+      heap* minheap = new_heap(nv+1, ORD_ASC, compare_kv);
       
       int i;
       for (i=0; i<nv; i++)
