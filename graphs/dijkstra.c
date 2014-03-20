@@ -16,11 +16,9 @@ int* dijkstra(graph* g, int from, int to)
             dist[i] = INT_MAX;
             previous[i] = -1;
             kv* val = new_kv(i, (void*) &dist[i], compare_integer);
-            printf("\nPushed @%d",i);
             push(minheap, val);
             
             #ifdef _DEBUG
-                  printf("\n ");
                   edge_iter* itd = new_edge_it(g,get_vertex(g,i));
                   edge* next = NULL;
                   while ((next = next_edge(itd)) != NULL) DBG("\n%d\tE(%lu,%lu) = %d",itd->idx,next->from->id,next->to->id,next->cost ) ;
@@ -66,10 +64,10 @@ int* dijkstra(graph* g, int from, int to)
                               
                               if (minheap->heap_size>0) 
                               {
+                                    kv* candidate = get_kv(minheap->array, minheap->heap_size, v);
+                                    if (candidate !=NULL)
                                     for (i=1; i<=minheap->heap_size; i++) 
                                     {
-                                          kv* candidate = (kv*) (minheap->array[i]);
-                                          //get_kv(minheap->array, minheap->heap_size, 
                                           //(kv*) (minheap->array[i]);
                                           
                                           if ( (candidate->k) == v ) 
