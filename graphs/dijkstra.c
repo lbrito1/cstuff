@@ -30,8 +30,8 @@ int* dijkstra(graph* g, int from, int to)
       dist[from]        = 0;
       previous[from]    = -1;
       
-      kv* min = NULL;
-      while ((min = pop(minheap)) != NULL)
+      kv* min = NULL; int found = FALSE;
+      while (((min = pop(minheap)) != NULL) && !found)
       {
             int u = min->k;
             visit(g->vertices[u]);
@@ -44,33 +44,25 @@ int* dijkstra(graph* g, int from, int to)
             while ((next = next_edge(it)) != NULL)
             {
                   int v = next->to->id;
+                  int ndist = dist[u] + next->cost;
                   DBG("\nv[%d]",v);
+                  DBG("\t optimal dist = %d",ndist);
                   
-                  if (u!=v) {
-                  
-                        edge* uv = get_edge(g, u, v);
-                  
-                        int ndist = dist[u] + uv->cost;
+                  //relax edge
+                  if ((ndist>=0) && (ndist<dist[v]) && (u!=v)) 
+                  {
+                        DBG("\tprev dist = %d",dist[v]);
                         
-                        DBG("\t optimal dist = %d",ndist);
+                        dist[v]     = ndist;
+                        previous[v] = u;
                         
-                        //relax edge
-                        if ((ndist>=0) && (ndist<dist[v])) 
-                        {
-                              DBG("\tprev dist = %d",dist[v]);
-                              
-                              dist[v] = ndist;
-                              previous[v] = u;
-                              
-                              if (minheap->heap_size>0) 
-                              {
-                                    int vpos = -1;
-                                    kv* candidate = get_kv(minheap->array, minheap->heap_size, v, &vpos);
-                                    if (candidate !=NULL) update(minheap, vpos);
-                              }
-                        }
+                        int vpos = -1;
+                        kv* candidate = get_kv(minheap->array, minheap->heap_size, v, &vpos);
+                        if (candidate !=NULL) update(minheap, vpos);
                   }
             }
+            
+            if (u==to) found = TRUE;
       }
       
       return previous;
@@ -112,7 +104,7 @@ int main()
       
       burger* bgfx = create(32,32);
       
-      int* d = dijkstra(g,0,2);
+      int* d = dijkstra(g,0,-1);
       
       print_graph(g,bgfx);
       
