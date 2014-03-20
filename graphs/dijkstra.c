@@ -4,7 +4,7 @@
  
 int* dijkstra(graph* g, int from, int to)
 {
-      int nv = g->nv; 
+      int nv = get_nv(g); 
       
       int* dist         = malloc(sizeof(int)*nv);
       int* previous     = malloc(sizeof(int)*nv);
@@ -34,7 +34,7 @@ int* dijkstra(graph* g, int from, int to)
       while (((min = pop(minheap)) != NULL) && !found)
       {
             int u = min->k;
-            visit(g->vertices[u]);
+            visit_vert(g,u);
             
             edge_iter* it = new_edge_it(g,get_vertex(g,u));
             edge* next = NULL;

@@ -1,12 +1,29 @@
+/*
+    File: al_graph.c
+
+    Copyright (c) 2014 Leonardo Brito <lbrito@gmail.com>
+
+    This software is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write the Free Software Foundation, Inc., 51
+    Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 #include <limits.h>
 #include "../data_structures/linked_list.c"
 #include "graph_ve.c"
 
 #define DIRECTED 0
 #define UNDIRECTED 1
-
-#define UNMARKED 0
-#define MARKED 1
 
 typedef struct graph
 {
@@ -76,6 +93,16 @@ vertex* get_vertex(graph* g, int idx)
       return g->vertices[idx];
 }
 
+int get_nv(graph* g)
+{
+      return g->nv;
+}
+
+int visit_vert(graph* g, int idx)
+{
+      return visit(g->vertices[idx]);
+}
+
 vertex* add_vertex(graph* g, void* data) 
 {
       vertex* v;
@@ -96,4 +123,6 @@ void add_edge(graph* g, vertex* vf, vertex* vt, int cost)
       add((g->adj_list[vf->id]), new_edge(vf,vt,cost));
       if (g->directed == UNDIRECTED) add((g->adj_list[vt->id]), new_edge(vt,vf,cost)); 
 }
+
+
 
