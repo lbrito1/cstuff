@@ -22,11 +22,9 @@ int* dijkstra(graph* g, int from, int to)
                   dist[i] = INT_MAX;
                   previous[i] = -1;
             }
-            int* x = malloc(sizeof(int));
-            *x = i;
-            kv* a = new_kv(dist[i], (void*)x);
+            kv* a = new_kv(i, (void*) &dist[i], compare_integer);
             push(minheap,a);
-            
+            DBG("\nInserted KV pair (%d,%d)",a->k, *(int*)a->v);
             
             #ifdef _DEBUG
                   edge_iter* itd = new_edge_it(g,get_vertex(g,i));
@@ -40,7 +38,7 @@ int* dijkstra(graph* g, int from, int to)
       kv* min = NULL;
       while ((min = pop(minheap)) != NULL)
       {
-            int u = *((int*) min->v);
+            int u = min->k;
             visit(g->vertices[u]);
             
             edge_iter* it = new_edge_it(g,get_vertex(g,u));
@@ -76,11 +74,11 @@ int* dijkstra(graph* g, int from, int to)
                                     {
                                           kv* candidate = (kv*) (minheap->array[i]);
                                           
-                                          if ( (*(int*) candidate->v) == v ) 
+                                          if ( (candidate->k) == v ) 
                                           {
                                                 DBG("\tFound %d",(*(int*) candidate->v));
                                                 v_p = pop_at(minheap, i);
-                                                v_p->k = dist[v];
+                                                v_p->v = &dist[v];
                                                 
                                                 push(minheap, v_p);
                                                 
