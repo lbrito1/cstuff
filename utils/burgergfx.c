@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+static inline void exchx(void** a, void** b) { void* p = *a; *a = *b; *b = p; }
 
 typedef struct
 {
@@ -149,27 +150,24 @@ void put_line(burger* bgfx, double dx1, double dy1, double dx2, double dy2)
       int y2 = get_norm_y(bgfx, dy2);
    
       int i = 0;
+      
+      if (x2<x1) {exchx((void**)&x1,(void**)&x2);
+      exchx((void**)&y1,(void**)&y2);}
 
+      #ifdef _DEBUG
+            printf("\nDRAWING LINE @ (%d,%d, %d,%d)",x1,y1,x2,y2);
+      #endif
 
       
       float a = (float)(y2-y1)/(float)(x2-x1);
       
-      if (x1<x2) 
-      {
+       
+      
             for (i=x1; i<x2 ;i++)
             {
                   int x = i - x1;
                   int y = (int) (a*x) + y1;
                   put_burger_int(bgfx, i, y, '.');
             }
-      }
-      else 
-      {
-            for (i=x2; i<x1; i++)
-            {
-                  int x = i - x2;
-                  int y = (int) (a*x) + (y1<y2 ? y2 : y1);
-                  put_burger_int(bgfx, i, y, '.');
-            }
-      }
+      
 }

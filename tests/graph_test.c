@@ -29,7 +29,7 @@ void draw_vertex_status(graph* g, burger* b)
 
 void draw_edges(graph* g, burger* b)
 {
-       int i;
+      int i;
       for (i=0; i<g->v_counter; i++)
       {
             element* head = g->adj_list[i]->head;
@@ -43,7 +43,11 @@ void draw_edges(graph* g, burger* b)
                         {
                               edge* e = (edge*) dptr;
                               vertex* to = e->to;
-                              if (to != NULL) put_line(b, from->x, from->y, to->x, to->y);
+                              if (to != NULL && to!=from) 
+                              {
+                                    printf("\n%d\t(%d,%d)\t@(%f,%f, %f,%f)",i,from->id,to->id,from->x,from->y,to->x,to->y);
+                                    put_line(b, from->x, from->y, to->x, to->y);
+                              }
                         }
                   }
                   head = head->next;
@@ -66,6 +70,7 @@ void print_vertex_status(graph* g, burger* bgfx)
       print_burger(bgfx);
 }
 
+#ifdef _DEBUG_G
 int main()
 {
       graph* g = new_graph(10);
@@ -108,3 +113,4 @@ int main()
       
       return 0;
 }
+#endif

@@ -111,6 +111,29 @@ void* pop(heap* h)
       return max;
 }
 
+void* pop_at(heap* h, int pos)
+{
+      if(h->heap_size<1) return NULL;
+      void* max = h->array[pos];
+      h->array[pos] = h->array[h->heap_size--];
+      heapify(h,pos);
+      return max;
+}
+
+
+/**
+ *  @brief Brief
+ *  
+ *  @param [in] h      Parameter_Description
+ *  @param [in] pos    Parameter_Description
+ *  @param [in] newval Parameter_Description
+ *  @return Return_Description
+ */
+void update(heap* h, int pos)
+{
+      heapify(h, pos);
+}
+
 /**
  *  @brief Pushes value onto heap
  *  
