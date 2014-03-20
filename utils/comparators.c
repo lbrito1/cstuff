@@ -41,11 +41,23 @@ int compare_kv(void* v1, void* v2)
       return 0;
 }
 
-kv* get_kv(void** array, int length, int key)
+kv* get_kv(void** array, int length, int key, int* pos)
 {
       int i;
       kv* val = NULL;
-      for (i=0;i<length;i++) if ((array[i]!=NULL) && ((val = (kv*)array[i])->k == key )) return val;
+      *pos = -1;
+      for (i=0;i<length;i++) 
+      {
+            if (array[i]!=NULL) 
+            {
+                  val = (kv*)array[i];
+                  if (val->k == key) 
+                  {
+                        *pos = i;
+                        return val;
+                  }
+            }
+      }
       return NULL;
 }
 

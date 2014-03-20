@@ -44,8 +44,9 @@ typedef struct {
 heap* new_heap(int size, int ord, int (*compare) (void*, void*))
 {
       heap* h = malloc(sizeof(heap));
-      h->array = malloc(sizeof(void*)*size);
+      h->array = malloc(sizeof(void*)*size+1);
       h->array_size = size+1;
+      h->array[0] = NULL;     //very important!! baadf00d
       h->heap_size = 0;
       h->cmp = compare;
       h->order = ord;
@@ -136,6 +137,7 @@ int push(heap* h, void* k)
       h->heap_size++; 
       
       int i = h->heap_size;
+      
       if (i>1) { 
             if (h->order == ORD_ASC) 
                   for (i = h->heap_size; i>1 && h->cmp(h->array[PARENT(i)], k) < 0; i = PARENT(i)) h->array[i] = h->array[PARENT(i)];
