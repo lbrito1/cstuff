@@ -2,7 +2,7 @@
 #include "../tests/graph_test.c"
 #include "../data_structures/heap.c"
  
-int* dijkstra(al_graph* g, int from, int to)
+int* dijkstra(graph* g, int from, int to)
 {
       int nv = g->nv;
       
@@ -105,7 +105,7 @@ int* dijkstra(al_graph* g, int from, int to)
 
 int main()
 {
-      al_graph* g = new_al_graph(10,UNDIRECTED);
+      graph* g = new_graph(10,UNDIRECTED);
       char mydata = '0';
       char mydata2 = '1';
       char mydata3 = '2';

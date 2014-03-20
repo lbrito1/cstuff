@@ -22,7 +22,7 @@ typedef struct edge
       int cost;
 } edge;
 
-typedef struct al_graph
+typedef struct graph
 {
       vertex** vertices;
       int directed;
@@ -31,7 +31,7 @@ typedef struct al_graph
       unsigned long nv;
       linked_list** adj_list;
       void (*printvert) (void*);
-} al_graph;
+} graph;
 
 int compare_v(void* v1, void* v2) 
 {
@@ -46,7 +46,7 @@ int compare_e(void* e1, void* e2)
       && (((edge*)e1)->to->id) == (((edge*)e2)->to->id);
 }
 
-int visit(al_graph* g, int vid) 
+int visit(graph* g, int vid) 
 {
       if (g->vertices[vid]->status == UNMARKED) 
       {
@@ -56,9 +56,9 @@ int visit(al_graph* g, int vid)
       return FALSE;
 }
 
-al_graph* new_al_graph(int n_vertices, int directed)
+graph* new_graph(int n_vertices, int directed)
 {
-      al_graph* g_p = malloc(sizeof(al_graph));
+      graph* g_p = malloc(sizeof(graph));
       g_p->directed = directed;
       g_p->max_vertices = n_vertices;
       g_p->vertices = malloc(sizeof(vertex*)*g_p->max_vertices);
@@ -90,14 +90,14 @@ edge* new_edge(vertex* from, vertex* to, int cost)
       return e;
 }
 
-edge* get_edge(al_graph* g, int from, int to)
+edge* get_edge(graph* g, int from, int to)
 {
       element* e = g->adj_list[from]->head;
       while ((e=e->next) != NULL) if (((((edge*) e->data)->to)->id) == to) return ((edge*) e->data);
       return NULL;
 }
 
-vertex* add_vertex(al_graph* g, void* data) 
+vertex* add_vertex(graph* g, void* data) 
 {
       vertex* v;
       int pos = g->nv;
@@ -116,13 +116,13 @@ vertex* add_vertex(al_graph* g, void* data)
 }
 
 
-void add_edge(al_graph* g, vertex* vf, vertex* vt, int cost)
+void add_edge(graph* g, vertex* vf, vertex* vt, int cost)
 {
       add((g->adj_list[vf->id]), new_edge(vf,vt,cost));
       if (g->directed == UNDIRECTED) add((g->adj_list[vt->id]), new_edge(vt,vf,cost)); 
 }
 
-void print_vertices(al_graph* g)
+void print_vertices(graph* g)
 {
       int i=0;
       printf("\nCurrently %lu elements",g->nv);
@@ -132,7 +132,7 @@ void print_vertices(al_graph* g)
 /*
 int main()
 {
-      al_graph* g = new_al_graph(10);
+      graph* g = new_graph(10);
       char* mydata = "Test";
       char* mydata2 = "Test2";
       char* mydata3 = "Test3";

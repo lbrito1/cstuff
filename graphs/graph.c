@@ -9,9 +9,9 @@
  *  @param [in] nvert number of vertices: make sure to be perfect square
  *  @return 
  */
-al_graph* build_complete_graph(int nvert) 
+graph* build_complete_graph(int nvert) 
 {
-      al_graph* g = new_al_graph(nvert,UNDIRECTED);
+      graph* g = new_graph(nvert,UNDIRECTED);
       int i,j,side=sqrt(nvert);
       
       assert(side*side==nvert);   // square number
@@ -50,9 +50,9 @@ al_graph* build_complete_graph(int nvert)
  *  @param [in] nvert number of vertices: make sure to be perfect square
  *  @return 
  */
-al_graph* build_matrix_al_graph(int nvert) 
+graph* build_matrix_graph(int nvert) 
 {
-      al_graph* g = new_al_graph(nvert,UNDIRECTED);
+      graph* g = new_graph(nvert,UNDIRECTED);
       int i,j,side=sqrt(nvert);
       
       assert(side*side==nvert);   // square number
