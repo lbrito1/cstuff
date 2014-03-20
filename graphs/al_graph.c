@@ -70,6 +70,12 @@ edge* get_edge(graph* g, int from, int to)
       return NULL;
 }
 
+vertex* get_vertex(graph* g, int idx)
+{
+      if (idx>g->nv) return NULL;
+      return g->vertices[idx];
+}
+
 vertex* add_vertex(graph* g, void* data) 
 {
       vertex* v;

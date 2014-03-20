@@ -29,12 +29,10 @@ int* dijkstra(graph* g, int from, int to)
             
             
             #ifdef _DEBUG
-            element* el = g->adj_list[i]->head;
-            while ((el=el->next)!=NULL) 
-            {
-                  edge* ed = (edge*) el->data;
-                  DBG("\n%d\tE(%lu,%lu) = %d",i,ed->from->id,ed->to->id,ed->cost ) ;
-            }
+                  edge_iter* itd = new_edge_it(g,get_vertex(g,i));
+                  edge* next = NULL;
+                  while ((next = next_edge(itd)) != NULL) DBG("\n%d\tE(%lu,%lu) = %d",itd->idx,next->from->id,next->to->id,next->cost ) ;
+                  free(itd);
             #endif
       }
       
@@ -45,20 +43,15 @@ int* dijkstra(graph* g, int from, int to)
             int u = *((int*) min->v);
             visit(g->vertices[u]);
             
-            element* head = g->adj_list[u]->head;
+            edge_iter* it = new_edge_it(g,get_vertex(g,u));
+            edge* next = NULL;
             
-            #ifdef _DEBUG
-                  DBG("\n\n===========\nChecking v[%d], HEAPSZ=%d\n---------\n",u,minheap->heap_size);
-                  DBG("\nNEIGHBORS OF %d:\t",u);
-                  while ((head = head->next) != NULL) DBG(" %lu,",((edge*)(head->data))->to->id);
-                  DBG("\n");
-            #endif
             
-            head = g->adj_list[u]->head;            
-            while ((head = head->next) != NULL) 
+            DBG("\n\n\nNEIGHBORS OF v[%d]:\n--------------------",u);
+            while ((next = next_edge(it)) != NULL)
             {
-                  int v = ((edge*) (head->data))->to->id;
-                  DBG("\nNeighbor %d",v);
+                  int v = next->to->id;
+                  DBG("\nv[%d]",v);
                   
                   if (u!=v) {
                   
@@ -66,7 +59,7 @@ int* dijkstra(graph* g, int from, int to)
                   
                         int ndist = dist[u] + uv->cost;
                         
-                        DBG("\t ndist= %d",ndist);
+                        DBG("\t optimal dist = %d",ndist);
                         
                         //relax edge
                         if ((ndist>=0) && (ndist<dist[v])) 
@@ -103,6 +96,7 @@ int* dijkstra(graph* g, int from, int to)
       return previous;
 }
 
+#ifdef _DIJKSTRA_MAIN
 int main()
 {
       graph* g = new_graph(10,UNDIRECTED);
@@ -150,3 +144,4 @@ int main()
       
       return 0;
 }
+#endif
