@@ -2,6 +2,35 @@
 #include <math.h>
 #include <assert.h>
 
+#define ADJ_LIST 0
+#define ADJ_MATRIX 1
+
+typedef struct {
+      int g_type;
+      al_graph* al_g;
+      int (*get_nv) (void*);
+      vertex** (*get_vlist) (void*); 
+      //mat_graph* mat_g;
+} graph;
+
+graph* new_graph(int type, int directed, int nvert)  
+{
+      graph* g;
+      if (type == ADJ_LIST)
+      {
+            g = malloc(sizeof(graph));
+            g->g_type = type;
+            g->al_g = new_al_graph(nvert, directed);
+            g->get_nv = get_al_nv;
+            g->get_vlist = get_al_vlist;
+            return g;
+      }
+      else if (type == ADJ_MATRIX)
+      {
+            return NULL;
+      }
+      else return NULL;
+}
 
 /**
  *  @brief Build a complete graph

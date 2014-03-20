@@ -106,7 +106,7 @@ void build_heap(heap* h)
 void* pop(heap* h)
 {
       if(h->heap_size<1) return NULL;
-      void* max = h->array[1];
+      void* max = h->array[1]; 
       h->array[1] = h->array[h->heap_size--];
       heapify(h,1);
       return max;

@@ -32,7 +32,7 @@ graph* new_graph(int n_vertices, int directed)
       graph* g_p = malloc(sizeof(graph));
       g_p->directed = directed;
       g_p->max_vertices = n_vertices;
-      g_p->vertices = malloc(sizeof(vertex*)*g_p->max_vertices);
+      g_p->vertices = malloc(sizeof(vertex*)*g_p->max_vertices); 
       g_p->nv = 0;
       g_p->n_edges = 0;
       g_p->adj_list = malloc(sizeof(linked_list*)*g_p->max_vertices);

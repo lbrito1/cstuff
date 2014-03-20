@@ -4,7 +4,7 @@
  
 int* dijkstra(graph* g, int from, int to)
 {
-      int nv = g->nv;
+      int nv = g->nv; 
       
       int* dist         = malloc(sizeof(int)*nv);
       int* previous     = malloc(sizeof(int)*nv);
