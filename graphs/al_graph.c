@@ -19,7 +19,7 @@ typedef struct graph
       void (*printvert) (void*);
 } graph;
 
-typedef struct 
+typedef struct edge_iter
 {
       graph* g;
       vertex* origin;
@@ -43,10 +43,12 @@ graph* new_graph(int n_vertices, int directed)
 
 edge_iter* new_edge_it(graph* g, vertex* from)
 {
+      printf("x");
       edge_iter* it = malloc(sizeof(edge_iter));
       it->g = g;
       it->origin = from;
       it->head = g->adj_list[from->id]->head->next;
+      printf("y");
       it->idx = 0;
       it->length = g->adj_list[from->id]->size;
       return it;

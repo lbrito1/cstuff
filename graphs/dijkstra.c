@@ -8,32 +8,29 @@ int* dijkstra(graph* g, int from, int to)
       
       int* dist         = malloc(sizeof(int)*nv);
       int* previous     = malloc(sizeof(int)*nv);
-      
       heap* minheap = new_heap(nv, ORD_ASC, compare_kv);
-      
-      dist[from] = 0;
-      previous[from] = -1;
       
       int i;
       for (i=0; i<nv; i++)
       {
-            if (i!=from) 
-            {
-                  dist[i] = INT_MAX;
-                  previous[i] = -1;
-            }
-            kv* a = new_kv(i, (void*) &dist[i], compare_integer);
-            push(minheap,a);
-            DBG("\nInserted KV pair (%d,%d)",a->k, *(int*)a->v);
+            dist[i] = INT_MAX;
+            previous[i] = -1;
+            kv* val = new_kv(i, (void*) &dist[i], compare_integer);
+            printf("\nPushed @%d",i);
+            push(minheap, val);
             
             #ifdef _DEBUG
+                  printf("\n ");
                   edge_iter* itd = new_edge_it(g,get_vertex(g,i));
                   edge* next = NULL;
                   while ((next = next_edge(itd)) != NULL) DBG("\n%d\tE(%lu,%lu) = %d",itd->idx,next->from->id,next->to->id,next->cost ) ;
                   free(itd);
             #endif
       }
+     
       
+      dist[from]        = 0;
+      previous[from]    = -1;
       
       kv* min = NULL;
       while ((min = pop(minheap)) != NULL)
@@ -69,18 +66,16 @@ int* dijkstra(graph* g, int from, int to)
                               
                               if (minheap->heap_size>0) 
                               {
-                                    kv* v_p = NULL;
                                     for (i=1; i<=minheap->heap_size; i++) 
                                     {
                                           kv* candidate = (kv*) (minheap->array[i]);
+                                          //get_kv(minheap->array, minheap->heap_size, 
+                                          //(kv*) (minheap->array[i]);
                                           
                                           if ( (candidate->k) == v ) 
                                           {
                                                 DBG("\tFound %d",(*(int*) candidate->v));
-                                                v_p = pop_at(minheap, i);
-                                                v_p->v = &dist[v];
-                                                
-                                                push(minheap, v_p);
+                                                update(minheap, i);
                                                 
                                                 i = minheap->heap_size+2;
                                           }
@@ -103,26 +98,29 @@ int main()
       char mydata3 = '2';
       char mydata4 = '3';
       char mydata5 = '4';
+      char mydata6 = '5';
       
       vertex* v0 = add_vertex(g, &mydata);
       vertex* v1 = add_vertex(g, &mydata2);
       vertex* v2 = add_vertex(g, &mydata3);
       vertex* v3 = add_vertex(g, &mydata4);
       vertex* v4 = add_vertex(g, &mydata5);
+      vertex* v5 = add_vertex(g, &mydata6);
       
       sendto(v0, 0.9, 0.1);
       sendto(v1, 0.4, 0.9);
       sendto(v2, 0.6, 0.3);
       sendto(v3, 0.7, 0.1);
       sendto(v4, 0.1, 0.3);
+      sendto(v5, 0.2, 0.8);
       
-      add_edge(g, v0, v1, 1);
-      add_edge(g, v0, v2, 1);
+      add_edge(g, v0, v1, 2);
+      add_edge(g, v0, v2, 3);
       add_edge(g, v1, v2, 1);
       add_edge(g, v2, v3, 1);
       add_edge(g, v4, v2, 1);
       add_edge(g, v4, v1, 1);
-      
+      add_edge(g, v5, v4, 1);
       // testing
       
       burger* bgfx = create(32,32);
