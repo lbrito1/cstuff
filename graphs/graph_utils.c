@@ -18,6 +18,7 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include "../utils/debug.c"
 #include "al_graph.c"
 #include <math.h>
 #include <assert.h>
@@ -77,12 +78,13 @@ graph* build_matrix_graph(int nvert)
       assert(side*side==nvert);   // square number
       
       //vertices
+      int ch = 97;
       for(i=0;i<side;i++) 
       {
-            for(j=0;j<side;j++) 
+            for(j=0;j<side;j++,ch++) 
             {
-                  int* data = malloc(sizeof(int));
-                  *data = j+(i*side);
+                  char* data = malloc(sizeof(int));
+                  *data = ch;
                   vertex* v = add_vertex(g, data);
                   v->x = j/(float)side;
                   v->y = i/(float)side;
@@ -90,26 +92,24 @@ graph* build_matrix_graph(int nvert)
       }
       
       //edges
-      for(i=0;i<side;i++) 
+      int from;
+      for(i=0,from=0;i<side;i++) 
       {
-            for(j=0;j<side;j++) 
+            for(j=0;j<side;j++,from++) 
             {
-                  int from = j+(i*side);
-                  
                   int n,e,w,s;
                   
                   n = from - side;
                   e = from +1;
-                  s = from + side;
                   w = from - 1;
+                  s = from + side;
                   
-                  if (n>0) add_edge(g, g->vertices[from], g->vertices[n], 1);
-                  if (e<side) add_edge(g, g->vertices[from], g->vertices[e], 1);
-                  if (w>0) add_edge(g, g->vertices[from], g->vertices[w], 1);
-                  if (s<side) add_edge(g, g->vertices[from], g->vertices[s], 1);
-                  
-            
-                  printf("\n%d\t%d,%d,%d,%d",from,n,e,w,s);
+                  DBG("\nMATGRAPH\tidx=%d\t%d,%d,%d,%d",from,n,e,w,s);
+                  DBG(" i=%d, j=%d",i,j);
+                  if ((n>=0) && (i!=0)) add_edge(g, g->vertices[from], g->vertices[n], 1);
+                  if ((e<=nvert) && (j!=side-1)) add_edge(g, g->vertices[from], g->vertices[e], 1);
+                  //if ((w>=0) && (i!=0)) add_edge(g, g->vertices[from], g->vertices[w], 1);
+                  //if (s<=side) add_edge(g, g->vertices[from], g->vertices[s], 1);
             }
       }     
       
