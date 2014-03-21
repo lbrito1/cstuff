@@ -130,19 +130,21 @@ int main()
       
       free(g);
       free(d);
-      g = build_matrix_graph(2304);
+      g = build_matrix_graph(25);
       
+      put_weight(g,1,0,100);
       d = dijkstra(g,0,-1);
       clean_burger(bgfx);
       
       print_graph(g,bgfx);
       
       
+      
       DBG("\nPrevious\n===============\n");
       for (i=0; i<g->nv; i++) DBG("\nvert[%d]\t%d",i,d[i]);
       
       clean_burger(bgfx);
-      print_trace(bgfx,g,d,15,1000);
+      print_trace(bgfx,g,d,0,23);
       //draw_vertex_status(g, bgfx);
       print_burger(bgfx);
       

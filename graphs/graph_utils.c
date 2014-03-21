@@ -116,6 +116,24 @@ graph* build_matrix_graph(int nvert)
       return g;
 }
 
+void put_weight(graph* g, int x, int y, int wg)
+{
+      int side = sqrt(get_nv(g));
+
+      
+      int idx = x + (y*side);
+      DBG("\nxy = %d, %d\t%d\tidx %d",x,y,side,idx);
+      
+      edge_iter* it = new_edge_it(g, get_vertex(g,idx));
+      
+      edge* next = NULL;
+      while ((next = next_edge(it)) != NULL)
+      {
+            next->cost = wg;
+            DBG("\nUPD COST@[%d]->[%d] = %d",next->from->id,next->to->id,next->cost);
+      }
+}
+
 void print_vertices(graph* g)
 {
       int i=0;
