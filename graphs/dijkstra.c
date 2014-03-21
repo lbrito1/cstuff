@@ -1,7 +1,7 @@
-#include "../utils/debug.c"
+#include <limits.h>
 #include "../tests/graph_test.c"
 #include "../data_structures/heap.c"
- 
+
 int* dijkstra(graph* g, int from, int to)
 {
       int nv = get_nv(g); 
@@ -69,6 +69,20 @@ int* dijkstra(graph* g, int from, int to)
 }
 
 #ifdef _DIJKSTRA_MAIN
+void print_trace(burger* b, graph* g, int* prev, int orig, int dest)
+{
+      DBG("\nTRACING FROM %d TO %d:\t",orig,dest);
+      int i=dest;
+      while ((i != orig) && (i<get_nv(g)))
+      {
+            DBG("%d, ",i);
+            vertex* t = get_vertex(g, i);
+            vertex* f = get_vertex(g, prev[i]);
+            if ((f!=NULL) && (t!=NULL)) put_line(b, f->x, f->y, t->x, t->y);
+            i = prev[i];
+      }
+}
+
 int main()
 {
       graph* g = new_graph(10,UNDIRECTED);
@@ -102,7 +116,7 @@ int main()
       add_edge(g, v5, v4, 1);
       // testing
       
-      burger* bgfx = create(32,32);
+      burger* bgfx = create(48,48);
       
       int* d = dijkstra(g,0,-1);
       
@@ -110,12 +124,27 @@ int main()
       
       print_vertex_status(g, bgfx);
 
-      DBG("\nPrevious\n===============\n");
       int i;
-      for (i=0; i<g->nv; i++)
-      {
-            DBG("\nvert[%d]\t%d",i,d[i]);
-      }
+      DBG("\nPrevious\n===============\n");
+      for (i=0; i<g->nv; i++) DBG("\nvert[%d]\t%d",i,d[i]);
+      
+      free(g);
+      free(d);
+      g = build_matrix_graph(25);
+      
+      d = dijkstra(g,0,-1);
+      clean_burger(bgfx);
+      
+      print_graph(g,bgfx);
+      
+      
+      DBG("\nPrevious\n===============\n");
+      for (i=0; i<g->nv; i++) DBG("\nvert[%d]\t%d",i,d[i]);
+      
+      clean_burger(bgfx);
+      print_trace(bgfx,g,d,2,20);
+      draw_vertex_status(g, bgfx);
+      print_burger(bgfx);
       
       return 0;
 }

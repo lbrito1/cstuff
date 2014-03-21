@@ -18,12 +18,10 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <limits.h>
-#include "../data_structures/linked_list.c"
-#include "graph_ve.c"
-
 #define DIRECTED 0
 #define UNDIRECTED 1
+#include "graph_ve.c"
+#include "../data_structures/linked_list.c"
 
 typedef struct graph
 {
@@ -44,6 +42,13 @@ typedef struct edge_iter
       int idx, length;
 } edge_iter;
 
+/**
+ *  @brief 
+ *  
+ *  @param [in] n_vertices max n vertices
+ *  @param [in] directed   DIRECTED or UNDIRECTED graph
+ *  @return 
+ */
 graph* new_graph(int n_vertices, int directed)
 {
       graph* g_p = malloc(sizeof(graph));
@@ -58,6 +63,13 @@ graph* new_graph(int n_vertices, int directed)
       return g_p;
 }
 
+/**
+ *  @brief Edge iterator: all neighbors of vertex 'from'
+ *  
+ *  @param [in] g    
+ *  @param [in] from 
+ *  @return 
+ */
 edge_iter* new_edge_it(graph* g, vertex* from)
 {
       edge_iter* it = malloc(sizeof(edge_iter));
@@ -69,6 +81,12 @@ edge_iter* new_edge_it(graph* g, vertex* from)
       return it;
 }
 
+/**
+ *  @brief Next edge in list
+ *  
+ *  @param [in] it 
+ *  @return 
+ */
 edge* next_edge(edge_iter* it)
 {
       if (++it->idx < it->length)
@@ -80,6 +98,14 @@ edge* next_edge(edge_iter* it)
       else return NULL;
 }
 
+/**
+ *  @brief Get edge from adjacency list
+ *  
+ *  @param [in] g    
+ *  @param [in] from 
+ *  @param [in] to   
+ *  @return 
+ */
 edge* get_edge(graph* g, int from, int to)
 {
       element* e = g->adj_list[from]->head;
@@ -87,22 +113,26 @@ edge* get_edge(graph* g, int from, int to)
       return NULL;
 }
 
+/**
+ *  @brief Get vertex from array @idx
+ *  
+ *  @param [in] g   
+ *  @param [in] idx 
+ *  @return 
+ */
 vertex* get_vertex(graph* g, int idx)
 {
       if (idx>g->nv) return NULL;
       return g->vertices[idx];
 }
 
-int get_nv(graph* g)
-{
-      return g->nv;
-}
-
-int visit_vert(graph* g, int idx)
-{
-      return visit(g->vertices[idx]);
-}
-
+/**
+ *  @brief Add vertex to graph
+ *  
+ *  @param [in] g    
+ *  @param [in] data vertex data
+ *  @return created vertex
+ */
 vertex* add_vertex(graph* g, void* data) 
 {
       vertex* v;
@@ -118,11 +148,40 @@ vertex* add_vertex(graph* g, void* data)
       return v;
 }
 
+/**
+ *  @brief Add edge to graph
+ *  
+ *  @param [in] g    
+ *  @param [in] vf   
+ *  @param [in] vt   
+ *  @param [in] cost 
+ *  @return 
+ */
 void add_edge(graph* g, vertex* vf, vertex* vt, int cost)
 {
       add((g->adj_list[vf->id]), new_edge(vf,vt,cost));
       if (g->directed == UNDIRECTED) add((g->adj_list[vt->id]), new_edge(vt,vf,cost)); 
 }
 
+/**
+ *  @brief Get number of vertices in graph
+ *  
+ *  @param [in] g 
+ *  @return 
+ */
+int get_nv(graph* g)
+{
+      return g->nv;
+}
 
-
+/**
+ *  @brief Visit vertex @idx
+ *  
+ *  @param [in] g   
+ *  @param [in] idx 
+ *  @return 
+ */
+int visit_vert(graph* g, int idx)
+{
+      return visit(g->vertices[idx]);
+}
