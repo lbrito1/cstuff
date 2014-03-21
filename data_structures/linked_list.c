@@ -3,6 +3,7 @@
 // CC-BY Leonardo Brito
 // lbrito@gmail.com
 //======================
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>

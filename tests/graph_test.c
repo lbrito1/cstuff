@@ -1,4 +1,5 @@
-#include "../graphs/graph.c"
+#pragma once
+#include "../graphs/graph_utils.c"
 #include "../utils/burgergfx.c"
 #include "../utils/debug.c"
 
@@ -14,6 +15,16 @@ void draw_vertices(graph* g, burger* b)
       {
             vertex* v = g->vertices[i];
             put_burger(b, v->x, v->y, *((char*) v->data));
+      }
+}
+
+void draw_vertices_spec(graph* g, burger* b, int data)
+{
+      int i;
+      for (i=0; i<g->nv; i++)
+      {
+            vertex* v = g->vertices[i];
+            if ((*(int*)v->data) != data) put_burger(b, v->x, v->y, *((char*) v->data));
       }
 }
 
