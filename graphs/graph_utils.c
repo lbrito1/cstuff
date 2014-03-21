@@ -84,7 +84,7 @@ graph* build_matrix_graph(int nvert)
             for(j=0;j<side;j++,ch++) 
             {
                   char* data = malloc(sizeof(int));
-                  *data = ch;
+                  *data = ch < 200 ? ch : 97;
                   vertex* v = add_vertex(g, data);
                   v->x = j/(float)side;
                   v->y = i/(float)side;

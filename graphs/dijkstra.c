@@ -130,7 +130,7 @@ int main()
       
       free(g);
       free(d);
-      g = build_matrix_graph(25);
+      g = build_matrix_graph(2304);
       
       d = dijkstra(g,0,-1);
       clean_burger(bgfx);
@@ -142,8 +142,8 @@ int main()
       for (i=0; i<g->nv; i++) DBG("\nvert[%d]\t%d",i,d[i]);
       
       clean_burger(bgfx);
-      print_trace(bgfx,g,d,2,20);
-      draw_vertex_status(g, bgfx);
+      print_trace(bgfx,g,d,15,1000);
+      //draw_vertex_status(g, bgfx);
       print_burger(bgfx);
       
       return 0;
