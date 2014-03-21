@@ -124,7 +124,14 @@ void put_weight(graph* g, int x, int y, int wg)
       int idx = x + (y*side);
       DBG("\nxy = %d, %d\t%d\tidx %d",x,y,side,idx);
       
-      edge_iter* it = new_edge_it(g, get_vertex(g,idx));
+      vertex* orig = get_vertex(g,idx);
+      
+      
+      int* xx = malloc(sizeof(int));
+      *xx = 87;
+      orig->data = (void*)xx;
+      
+      edge_iter* it = new_edge_it(g, orig);
       
       edge* next = NULL;
       while ((next = next_edge(it)) != NULL)

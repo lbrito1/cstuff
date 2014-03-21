@@ -116,7 +116,7 @@ int main()
       add_edge(g, v5, v4, 1);
       // testing
       
-      burger* bgfx = create(48,48);
+      burger* bgfx = create(32,32);
       
       int* d = dijkstra(g,0,-1);
       
@@ -124,19 +124,23 @@ int main()
       
       print_vertex_status(g, bgfx);
 
-      int i;
+      int i,j;
       DBG("\nPrevious\n===============\n");
       for (i=0; i<g->nv; i++) DBG("\nvert[%d]\t%d",i,d[i]);
       
       free(g);
       free(d);
-      g = build_matrix_graph(25);
+      g = build_matrix_graph(1024);
       
-      put_weight(g,1,0,100);
+      char data = ' ';
+      for(i=0;i<get_nv(g);i++) get_vertex(g,i)->data = (void*) &data;
+      
+      for (i=5;i<28;i++)
+            for (j=3;j<10;j++) put_weight(g,i,j,100);
+            
       d = dijkstra(g,0,-1);
       clean_burger(bgfx);
       
-      print_graph(g,bgfx);
       
       
       
@@ -144,7 +148,8 @@ int main()
       for (i=0; i<g->nv; i++) DBG("\nvert[%d]\t%d",i,d[i]);
       
       clean_burger(bgfx);
-      print_trace(bgfx,g,d,0,23);
+      print_trace(bgfx,g,d,0,1020);
+      draw_vertices_spec(g,bgfx,87);
       //draw_vertex_status(g, bgfx);
       print_burger(bgfx);
       
