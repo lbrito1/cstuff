@@ -9,6 +9,12 @@
     
     Cormen & Leiserson chap 13
     
+    Operation costs:
+    
+    SEARCH, FINDMIN, SUCCESSOR, INSERT, DELETE 
+    
+    O(h) time on a tree with height h.
+    
     Copyright (c) 2014 Leonardo Brito <lbrito@gmail.com>
 
     This software is free software; you can redistribute it and/or modify
@@ -83,7 +89,12 @@ void tree_insert(binary_tree* bt, node* n)
       }
 }
 
-
+/**
+ *  @brief Finds the tree's minval node
+ *  
+ *  @param [in] btroot 
+ *  @return 
+ */
 node* tree_min(node* btroot)
 {
       node* it = btroot;
@@ -122,6 +133,13 @@ node* tree_successor(binary_tree* bt, node* n)
       return suc_n;
 }
 
+/**
+ *  @brief Searches for the node with the specified val
+ *  
+ *  @param [in] bt  
+ *  @param [in] val 
+ *  @return 
+ */
 node* tree_search(binary_tree* bt, void* val)
 {
       DBG("Searching for node %d\n",*(int*) val);
@@ -160,23 +178,38 @@ node* tree_search(binary_tree* bt, void* val)
  *  which will have at most one child, and replace x
  *  with y. y's child z becomes child of y's parent.
  *  
+ *  Ref. Cormen & Leiserson 2 ed p 253
+ *  
  *  @param [in] 
  *  @param [in] 
  *  @return 
  */
 node* tree_delete(binary_tree* bt, void* value)
 {
-      node* x = tree_search(bt, value);
+      node* z = tree_search(bt, value);
 
-      if (x!=NULL) 
+      node* y = NULL;
+      
+      if (z!=NULL) 
       {
-            if ((x->left_child == NULL) & (x->right_child == NULL))
-            {
-                  return x;
-            }
+            if ((z->left_child == NULL) | (z->right_child == NULL)) y = z;
+            else y = tree_successor(bt, z);
+            
+            node* x = NULL;
+            
+            if    (y->left_child != NULL) x = y->left_child;
+            else  x = y->right_child;
+            
+            if (x!=NULL) x->parent = y->parent;
+            
+            if (y->parent == NULL) bt->root = x;
+            else if (y == y->parent->left_child) y->parent->left_child = x;
+            else y->parent->right_child = x;
+            
+            if (y != z) z->data = y->data;
       }
       
-      return x;
+      return y;
 }
 
 void visit(node* n)
@@ -207,13 +240,17 @@ int main()
       
       depth_first(bt, visit, IN_ORDER);
 
-      tree_delete(bt, to_delete);
       
       node* min = tree_min(bt->root);
       DBG("Tree min = %d\n",*(int*)min->data);
       
       node* sucn = tree_successor(bt, suc);
       DBG("Successor to %d is %d\n",*(int*)suc->data,*(int*)sucn->data);
+      
+      node* del = tree_delete(bt, to_delete);
+      DBG("Deleted node %d\n",*(int*)del->data);
+      
+      depth_first(bt,visit,IN_ORDER);
       
       return 0;
 }
