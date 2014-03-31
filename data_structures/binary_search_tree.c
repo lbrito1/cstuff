@@ -32,6 +32,20 @@
 #include "../utils/comparators.c"
 #include "binary_tree.c"
 
+
+/**
+ *  @brief Insertion
+ *  
+ *  Starting from the root, we dive down through
+ *  the children until we reach the node whose
+ *  value is closest to the value of the node we
+ *  want to insert. The new node is inserted as a
+ *  child to the left or right of that leaf.
+ *  
+ *  @param [in] bt 
+ *  @param [in] n  
+ *  @return Return_Description
+ */
 void tree_insert(binary_tree* bt, node* n)
 {
       node* cur = bt->root;
@@ -69,6 +83,102 @@ void tree_insert(binary_tree* bt, node* n)
       }
 }
 
+
+node* tree_min(node* btroot)
+{
+      node* it = btroot;
+      if(it!=NULL)
+            while (it->left_child!=NULL) it = it->left_child;
+      return it;
+}
+
+
+/**
+ *  @brief Successor to n
+ *  
+ *  If n is the largest node of the tree, return NULL.
+ *  
+ *  Else, if n has a right child x, find the leftmost
+ *  node (i.e. smallest) in the subtree rooted at x.
+ *  
+ *  If n doesn't have a right child, 
+ *  
+ *  @param [in] bt Parameter_Description
+ *  @param [in] n  Parameter_Description
+ *  @return Return_Description
+ */
+node* tree_successor(binary_tree* bt, node* n)
+{
+      node* suc_n = NULL;
+
+      if (n->right_child!=NULL) return tree_min(n->right_child);
+      suc_n = n->parent;
+      while ((suc_n != NULL) && (n == suc_n->right_child)) 
+      {
+            n = suc_n;
+            suc_n = suc_n->parent;
+      }
+
+      return suc_n;
+}
+
+node* tree_search(binary_tree* bt, void* val)
+{
+      DBG("Searching for node %d\n",*(int*) val);
+      node* it = bt->root;
+      while (it!=NULL)
+      {
+            int cmp = bt->cmp(it->data,val);
+            if (cmp<0) it = it->left_child;
+            else if (cmp>0) it = it->right_child;
+            else 
+            {
+                  DBG("Found node %d\n",*(int*)it->data);
+                  return it;
+            }
+      }
+      return NULL;
+}
+
+
+/**
+ *  @brief Deletion
+ *  
+ *  There are four possibilities regarding the node
+ *  we want to delete:
+ *  
+ *  1. It doesn't exist - trivial case.
+ *  2. It exists and has no child - trivial case,
+ *  simply remove it from the tree.
+ *  3. It exits and has one child - trivial case,
+ *  simply replace it with it's child.
+ *  4. It exists and has two children.
+ *  
+ *  The last case is the only one that is non-trivial. 
+ *  After identifying the node x in the tree (the one
+ *  we want removed), we need to find it's successor y, 
+ *  which will have at most one child, and replace x
+ *  with y. y's child z becomes child of y's parent.
+ *  
+ *  @param [in] 
+ *  @param [in] 
+ *  @return 
+ */
+node* tree_delete(binary_tree* bt, void* value)
+{
+      node* x = tree_search(bt, value);
+
+      if (x!=NULL) 
+      {
+            if ((x->left_child == NULL) & (x->right_child == NULL))
+            {
+                  return x;
+            }
+      }
+      
+      return x;
+}
+
 void visit(node* n)
 {
       DBG("Visited node #%d\n",*(int*)n->data);
@@ -83,16 +193,28 @@ int main()
       
       srand(time(NULL));
       int i;
+      void* to_delete = NULL;
+      node* suc = NULL;
       for(i=0;i<ts;i++) 
       {
             int* data = malloc(sizeof(int));
             *data = rand()%(ts*10);
+            if (i==ts-1) to_delete = (void*)data;
             node* n = new_node((void*) data);
             tree_insert(bt, n);     
+            if (i==3) suc=n;
       }
       
       depth_first(bt, visit, IN_ORDER);
 
+      tree_delete(bt, to_delete);
+      
+      node* min = tree_min(bt->root);
+      DBG("Tree min = %d\n",*(int*)min->data);
+      
+      node* sucn = tree_successor(bt, suc);
+      DBG("Successor to %d is %d\n",*(int*)suc->data,*(int*)sucn->data);
+      
       return 0;
 }
 #endif
