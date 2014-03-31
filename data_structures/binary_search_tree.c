@@ -41,7 +41,9 @@ void tree_insert(binary_tree* bt, node* n)
       while(cur!=NULL)
       {
             prev = cur;
-            if (bt->cmp(cur->data, n->data) < 0) 
+            if ( (bt->order == ORD_ASC) 
+                  ? bt->cmp(cur->data, n->data) < 0
+                  : bt->cmp(cur->data, n->data) > 0 ) 
             {
                   cur = cur->left_child;
                   goes_to = LEFT;
@@ -72,6 +74,7 @@ void visit(node* n)
       DBG("Visited node #%d\n",*(int*)n->data);
 }
 
+#ifdef _DEBUG
 int main()
 {
       binary_tree* bt = new_binary_tree(compare_integer, ORD_ASC);
@@ -92,3 +95,4 @@ int main()
 
       return 0;
 }
+#endif
