@@ -225,6 +225,10 @@ void rebalance(binary_tree* bt, node* leaf)
 
 void avl_insert(binary_tree* bt, node* n)
 {
+      #ifdef _DEBUG
+      if (tree_search(bt,n->data)) return;      //checks for repeated nodes
+      #endif
+
       tree_insert(bt, n);   
       rebalance(bt, n);
 }
@@ -233,24 +237,29 @@ void avl_insert(binary_tree* bt, node* n)
 #ifdef _DEBUG
 void visit(node* n)
 {
-      DBG("Visited node #%d \tPARENT=%d\tHEIGHT=%d\n",*(int*)n->data,
+      DBG("Visited node #%d (%c) \tPARENT=%d (%c)\tHEIGHT=%d\n",
+      *(int*)n->data,
+      *(int*)n->data,
       n->parent?*(int*)n->parent->data:-1,
+      n->parent?*(int*)n->parent->data:'*',
       n->height);
 }
 
-void print_tree(burger* burg, node* r, float sx, float sy)
+void print_tree(burger* burg, node* r, float sx, float sy, int pair)
 {
       put_burger(burg, sx,sy,*(char*)r->data);
       
+      float rf = 0;//(pair==0) ? -0.05 : 0;
+      
       if (r->left_child) 
       {
-            print_tree(burg, r->left_child,sx-0.15,sy+0.15);
-            put_line(burg, sx, sy, sx-0.15, sy+0.15);
+            print_tree(burg, r->left_child, sx-0.1+rf, sy+0.1, (pair==0) ? 1 : 0);
+            put_line(burg, sx, sy, sx-0.1+rf, sy+0.1);
       }
       if (r->right_child) 
       {
-            print_tree(burg, r->right_child,sx+0.15,sy+0.15);
-            put_line(burg, sx, sy, sx+0.15, sy+0.15);
+            print_tree(burg, r->right_child,sx+0.1,sy+0.1, (pair==0) ? 1 : 0);
+            put_line(burg, sx, sy, sx+0.1+rf, sy+0.1);
       }
 }
 
@@ -259,7 +268,6 @@ int main()
       binary_tree* bt = new_binary_tree(compare_integer, ORD_ASC);
 
       int ts = 8;     
-      
       srand(time(NULL));
       int i;
       for(i=0;i<ts;i++) 
@@ -275,9 +283,9 @@ int main()
       
       v_step = 1/(float)(bt->root->height);
       
-      burger* burg = create(32,32);
+      burger* burg = create(48,48);
       clean_burger(burg);
-      print_tree(burg,bt->root,0.5,0.1);
+      print_tree(burg,bt->root,0.5,0.1, 0);
       print_burger(burg);
 
 
