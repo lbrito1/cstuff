@@ -32,6 +32,7 @@
 typedef struct node
 {
       void* data;
+      int height, bal;
       struct node* parent;
       struct node* left_child;
       struct node* right_child;
@@ -61,6 +62,8 @@ node* new_node(void* data)
       n->parent = NULL;
       n->left_child = NULL;
       n->right_child = NULL;
+      n->height = 0;
+      n->bal = 0;
       return n;
 }
 
