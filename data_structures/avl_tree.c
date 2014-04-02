@@ -3,7 +3,28 @@
 #include "binary_search_tree.c"
 #include "..\utils\burgergfx.c"
 
+#ifdef _DEBUG
+burger* burg;
+#endif
 
+
+void print_tree(burger* burg, node* r, float sx, float sy, int pair)
+{
+      put_burger(burg, sx,sy,*(char*)r->data);
+      
+      float rf = 0;//(pair==0) ? -0.05 : 0;
+      
+      if (r->left_child) 
+      {
+            print_tree(burg, r->left_child, sx-0.1+rf, sy+0.1, (pair==0) ? 1 : 0);
+            put_line(burg, sx, sy, sx-0.1+rf, sy+0.1);
+      }
+      if (r->right_child) 
+      {
+            print_tree(burg, r->right_child,sx+0.1,sy+0.1, (pair==0) ? 1 : 0);
+            put_line(burg, sx, sy, sx+0.1+rf, sy+0.1);
+      }
+}
 /**
  *  @brief AVL tree rotation
  *  
@@ -66,14 +87,14 @@
  *  @param [in] n  
  *  @return 
  */
-int rotate(binary_tree* bt, node* n)
+int rotate(node* n, node* newroot)
 {
       int bal = n->bal;
       if ((bal<-2) | (bal>2)) return -1;  // shouldn't ever happen
       
       node *x,*y,*z,*a,*b,*c,*d;
       
-     
+      DBG("\nROTATING NODE %d (%c)... ",*(int*)n->data, *(int*)n->data);
       
       // LEFT ROTATION
       if (bal == 2)
@@ -81,6 +102,8 @@ int rotate(binary_tree* bt, node* n)
             // LEFT-RIGHT
             if (n->left_child->bal == -1)
             {
+                  DBG("LR ROTATION...");
+                  
                   x = n;
                   y = x->left_child;
                   z = y->right_child;
@@ -100,21 +123,36 @@ int rotate(binary_tree* bt, node* n)
             // LEFT-LEFT
             if ((n->left_child->bal == 1) | (n->left_child->bal == 0))
             {
+                  DBG("LL ROTATION\n\n");
+                  
                   x = n;
                   z = x->left_child;
                   y = z->left_child;
+
+                  DBG("XYZ = %c, %c, %c\n",
+                  *(int*)x->data,*(int*)y->data,*(int*)z->data);
                   
-                  bt->root = z;     // z will always be the new tree root
+                  newroot = z;
                   
                   a = y->left_child;
                   b = y->right_child;
                   c = z->right_child;
                   d = x->right_child;
                   
+                  
+                  z->parent = x->parent;
+                  
+                  if (x->parent) 
+                  {
+                        if ((x->parent->left_child) && (x->parent->left_child == x))
+                              z->parent->left_child = z;
+                        else if ((x->parent->right_child) && (x->parent->right_child == x))
+                              z->parent->right_child = z;
+                  }
                   z->right_child = x;
                   x->parent = z;
                   x->left_child = c;
-                  c->parent = x;
+                  if (c) c->parent = x;
                   
                   return 0;
             }
@@ -127,6 +165,8 @@ int rotate(binary_tree* bt, node* n)
             //RIGHT-LEFT
             if (n->right_child->bal == 1)
             {
+                  DBG("RL ROTATION...");
+                  
                   y = n;
                   x = y->right_child;
                   z = x->left_child;
@@ -147,21 +187,34 @@ int rotate(binary_tree* bt, node* n)
             //RIGHT-RIGHT
             if ((n->right_child->bal == -1) | (n->right_child->bal == 0))
             {
+                  DBG("RR ROTATION\n\n");
+                  
                   y = n;
                   z = y->right_child;
                   x = z->right_child;
                   
-                  bt->root = z;     // z will always be the new tree root
+                  newroot = z;
                   
                   a = y->left_child;
                   b = z->left_child;
                   c = x->left_child;
                   d = x->right_child;
                   
+                  z->parent = y->parent;
+                  
+                  if (y->parent) 
+                  {
+                        if ((y->parent->left_child) && (y->parent->left_child == y))
+                              z->parent->left_child = z;
+                        else if ((y->parent->right_child) && (y->parent->right_child == y))
+                              z->parent->right_child = z;
+                  }
+                  
+                  
                   z->left_child = y;
                   y->parent = z;
                   y->right_child = b;
-                  b->parent = y;
+                  if(b) b->parent = y;
                   
                   return 0;
             }
@@ -215,18 +268,47 @@ void rebalance(binary_tree* bt, node* leaf)
             if (next) 
             {
                   int lh = 0;
-                  if (next->left_child) lh = fmax(next->left_child->height, 1);
+                  if (next->left_child) lh = next->left_child->height+1;
                   int rh = 0;
-                  if (next->right_child) rh = fmax(next->right_child->height, 1);
+                  if (next->right_child) rh = next->right_child->height+1;
                   
                   next->bal = lh-rh;
                   DBG("Node %d (%c)\tlh=%d, rh=%d\tBAL = %d\n",
                   *(int*)next->data,*(int*)next->data,lh,rh,next->bal);
             }
             
-            int rotate_err = rotate(bt, next);
-            DBG("Calling rotate @node %d (%c). newbal=%d, Return: %d\t",
-            *(int*)next->data, *(int*)next->data,next->bal, rotate_err);
+            
+            node* new_subtree_root = NULL;
+
+            DBG("\n====================\nBefore rotate\n=============\n\n");
+            clean_burger(burg);
+            print_tree(burg,bt->root,0.5,0.1, 0);
+            print_burger(burg);
+            int rotate_err = rotate(next, new_subtree_root);
+     
+            
+            
+            node* r = bt->root;
+            while (r)
+            {
+                  bt->root = r;
+                  DBG("R %d\t",*(int*)r->data);
+                  
+                  r = r->parent;
+            }
+            
+            if (rotate_err==0) {
+            
+            DBG("\n====================\nAfter rotate\n=============\n\n");
+            clean_burger(burg);
+            print_tree(burg,bt->root,0.5,0.1, 0);
+            print_burger(burg);
+
+}
+     
+            if (rotate_err<0) break;
+            DBG("Rotated node %d (%c). newbal=%d\n",
+            *(int*)next->data, *(int*)next->data,next->bal);
             
             next = next->parent;
             branch_h++;
@@ -256,23 +338,6 @@ void visit(node* n)
       n->height);
 }
 
-void print_tree(burger* burg, node* r, float sx, float sy, int pair)
-{
-      put_burger(burg, sx,sy,*(char*)r->data);
-      
-      float rf = 0;//(pair==0) ? -0.05 : 0;
-      
-      if (r->left_child) 
-      {
-            print_tree(burg, r->left_child, sx-0.1+rf, sy+0.1, (pair==0) ? 1 : 0);
-            put_line(burg, sx, sy, sx-0.1+rf, sy+0.1);
-      }
-      if (r->right_child) 
-      {
-            print_tree(burg, r->right_child,sx+0.1,sy+0.1, (pair==0) ? 1 : 0);
-            put_line(burg, sx, sy, sx+0.1+rf, sy+0.1);
-      }
-}
 
 void print_avl(burger* burg, binary_tree* bt)
 {
@@ -283,8 +348,8 @@ void print_avl(burger* burg, binary_tree* bt)
 
 int main()
 {
+      burg = create(48,48);
       binary_tree* bt = new_binary_tree(compare_integer, ORD_ASC);
-      burger* burg = create(48,48);
 
       int ts = 8;     
       srand(time(NULL));
@@ -294,8 +359,11 @@ int main()
             int* data = malloc(sizeof(int));
             *data = 65+(rand()%(25));
             node* n = new_node((void*) data);
-            avl_insert(bt, n);     
-            print_avl(burg, bt);
+            DBG("\n\n===============\nPRE-INSERT\n===============\n\n");
+            if (bt->root) print_avl(burg, bt);
+            avl_insert(bt, n);
+            DBG("\n\n===============\nPOST-INSERT\n===============\n\n");
+            print_avl(burg, bt);            
       }
       depth_first(bt, visit, IN_ORDER);
 
