@@ -242,8 +242,16 @@ void print_tree(burger* burg, node* r, float sx, float sy)
 {
       put_burger(burg, sx,sy,*(char*)r->data);
       
-      if (r->left_child) print_tree(burg, r->left_child,sx-0.15,sy+0.15);
-      if (r->right_child) print_tree(burg, r->right_child,sx+0.15,sy+0.15);
+      if (r->left_child) 
+      {
+            print_tree(burg, r->left_child,sx-0.15,sy+0.15);
+            put_line(burg, sx, sy, sx-0.15, sy+0.15);
+      }
+      if (r->right_child) 
+      {
+            print_tree(burg, r->right_child,sx+0.15,sy+0.15);
+            put_line(burg, sx, sy, sx+0.15, sy+0.15);
+      }
 }
 
 int main()
