@@ -113,6 +113,21 @@ void put_burger_int(burger* b, int x, int y, char c)
 }
 
 /**
+ *  @brief Put char in cell
+ *  
+ *  @param [in] b burger
+ *  @param [in] x cell index
+ *  @param [in] y cell index
+ *  @param [in] c char to be put
+ */
+void soft_put_burger_int(burger* b, int x, int y, char c)
+{
+      if (b->burger_matrix[y+(x*b->w)] == ' ') put_burger_int(b,x,y,c);
+}
+
+
+
+/**
  *  @brief Print the current burger
  *  
  *  @param [in] bgfx 
@@ -166,14 +181,14 @@ void put_line(burger* bgfx, double dx1, double dy1, double dx2, double dy2)
             {
                   int x = i - x1;
                   int y = (int) (a*x) + y1;
-                  put_burger_int(bgfx, i, y, '.');
+                  soft_put_burger_int(bgfx, i, y, '.');
             }
       }
       else
       {
             for (i=y1; i<y2; i++)
             {
-                  put_burger_int(bgfx, x1, i, '.');
+                  soft_put_burger_int(bgfx, x1, i, '.');
             }
       }
 }
