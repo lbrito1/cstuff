@@ -1,10 +1,8 @@
 #include <time.h>
+#include <math.h>
 #include "binary_search_tree.c"
 #include "..\utils\burgergfx.c"
 
-#ifdef _DEBUG
-float v_step;
-#endif
 
 /**
  *  @brief AVL tree rotation
@@ -197,25 +195,38 @@ int rotate(binary_tree* bt, node* n)
  */
 void rebalance(binary_tree* bt, node* leaf)
 {
+      DBG("\n\nSTARTED CHECKING NODE %d (%c)\n=====================\n\n",
+      *(int*)leaf->data,*(int*)leaf->data);
+
       int branch_h = 0;
       node* next = leaf;
       while (next)
       {
-            next->height = (branch_h > next->height) ? branch_h : next->height;
-            DBG("Node %d new height: %d\n",*(int*)next->data, next->height);
+            DBG("\nnode in path %d (%c)\n-----------------\n", 
+            *(int*)next->data,*(int*)next->data);
+            
+            if (branch_h > next->height) 
+            { 
+                  next->height = branch_h;
+                  DBG("Node %d new height: %d\n",*(int*)next->data, next->height);
+            }
+            
             
             if (next) 
             {
-                  int lh = (next->left_child) ? next->left_child->height : 0;
-                  int rh = (next->right_child) ? next->right_child->height : 0;
+                  int lh = 0;
+                  if (next->left_child) lh = fmax(next->left_child->height, 1);
+                  int rh = 0;
+                  if (next->right_child) rh = fmax(next->right_child->height, 1);
+                  
                   next->bal = lh-rh;
-                  DBG("Node %d\tlh=%d, rh=%d\tBAL = %d\n",
-                  *(int*)next->data,lh,rh,next->bal);
+                  DBG("Node %d (%c)\tlh=%d, rh=%d\tBAL = %d\n",
+                  *(int*)next->data,*(int*)next->data,lh,rh,next->bal);
             }
             
-            //int rotate_err = rotate(bt, next);
-            //DBG("Calling rotate @node %d. newbal=%d, Return: %d\t",
-            //*(int*)next->data, next->bal, rotate_err);
+            int rotate_err = rotate(bt, next);
+            DBG("Calling rotate @node %d (%c). newbal=%d, Return: %d\t",
+            *(int*)next->data, *(int*)next->data,next->bal, rotate_err);
             
             next = next->parent;
             branch_h++;
@@ -263,9 +274,17 @@ void print_tree(burger* burg, node* r, float sx, float sy, int pair)
       }
 }
 
+void print_avl(burger* burg, binary_tree* bt)
+{
+      clean_burger(burg);
+      print_tree(burg,bt->root,0.5,0.1, 0);
+      print_burger(burg);
+}
+
 int main()
 {
       binary_tree* bt = new_binary_tree(compare_integer, ORD_ASC);
+      burger* burg = create(48,48);
 
       int ts = 8;     
       srand(time(NULL));
@@ -276,17 +295,13 @@ int main()
             *data = 65+(rand()%(25));
             node* n = new_node((void*) data);
             avl_insert(bt, n);     
+            print_avl(burg, bt);
       }
       depth_first(bt, visit, IN_ORDER);
 
       
+
       
-      v_step = 1/(float)(bt->root->height);
-      
-      burger* burg = create(48,48);
-      clean_burger(burg);
-      print_tree(burg,bt->root,0.5,0.1, 0);
-      print_burger(burg);
 
 
       return 0;

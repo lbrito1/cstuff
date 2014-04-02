@@ -58,7 +58,7 @@ node* new_node(void* data)
 {
       node* n = malloc(sizeof(node));
       n->data = data;
-      DBG("New node (#%d)\n",*(int*)n->data);
+      DBG("New node #%d (%c)\n",*(int*)n->data,*(int*)n->data);
       n->parent = NULL;
       n->left_child = NULL;
       n->right_child = NULL;
