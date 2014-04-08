@@ -1,4 +1,3 @@
-#include "../tests/graph_test.c"
 #include "../graphs/dijkstra.c"
 
 #define WALL 87
@@ -73,11 +72,13 @@ int main()
       
       // Matrix graph (nxn)
       
+  
       
       int i,j;
       DBG("\nPrevious\n===============\n");
       for (i=0; i<g->nv; i++) DBG("\nvert[%d]\t%d",i,d[i]);
       
+      #ifdef _PATHFINDING
       int start = 0, finish = (res*res)-2;
       
       free(g);
@@ -108,6 +109,8 @@ int main()
       draw_vertices_spec(g,bgfx,1);
       //draw_vertex_status(g, bgfx);
       print_burger(bgfx);
+      
+      #endif
       
       return 0;
 }

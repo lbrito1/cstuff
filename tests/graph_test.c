@@ -1,4 +1,3 @@
-#pragma once
 #include "../graphs/graph_utils.c"
 #include "../utils/burgergfx.c"
 #include "../utils/debug.c"
@@ -93,25 +92,33 @@ int main()
       char mydata3 = 'C';
       char mydata4 = 'D';
       char mydata5 = 'F';
+      char mydata6 = 'G';
+      char mydata7 = 'H';
       
       vertex* v1 = add_vertex(g, &mydata);
       vertex* v2 = add_vertex(g, &mydata2);
       vertex* v3 = add_vertex(g, &mydata3);
       vertex* v4 = add_vertex(g, &mydata4);
       vertex* v5 = add_vertex(g, &mydata5);
+      vertex* v6 = add_vertex(g, &mydata6);
+      vertex* v7 = add_vertex(g, &mydata7);
       
-      sendto(v1, 0.9, 0.1);
-      sendto(v2, 0.4, 0.9);
+      sendto(v1, 0.9, 0.4);
+      sendto(v2, 0.5, 0.6);
       sendto(v3, 0.6, 0.3);
       sendto(v4, 0.7, 0.1);
-      sendto(v5, 0.1, 0.3);
+      sendto(v5, 0.2, 0.45);
+      sendto(v6, 0.4, 0.7);
+      sendto(v7, 0.7, 0.7);
       
-      add_edge(g, v1, v2, 1);
       add_edge(g, v1, v3, 1);
       add_edge(g, v2, v3, 1);
+      add_edge(g, v2, v5, 1);
       add_edge(g, v3, v4, 1);
       add_edge(g, v5, v3, 1);
-      add_edge(g, v5, v2, 1);
+      add_edge(g, v6, v2, 1);
+      add_edge(g, v6, v5, 1);
+      add_edge(g, v7, v1, 1);
       
       edge_iter* it = new_edge_it(g,v1);
       edge* next = NULL;
@@ -121,7 +128,7 @@ int main()
       
       // testing
       
-      burger* bgfx = create(32,32);
+      burger* bgfx = create(48,48);
       
       print_graph(g,bgfx);
       
