@@ -1,3 +1,37 @@
+/*
+
+
+
+
+
+
+
+
+
+
+
+todo: rotate está identificando casos errados após rotações corretas por conta de balances desatualizados
+solucao: realizar sempre o update do balance
+
+todo 2: evitar printar um no em cima do outro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
 #include <time.h>
 #include <math.h>
 #include "binary_search_tree.c"
@@ -87,10 +121,10 @@ void print_tree(burger* burg, node* r, float sx, float sy, int pair)
  *  @param [in] n  
  *  @return 
  */
-int rotate(node* n, node* newroot)
+node* rotate(node* n)
 {
       int bal = n->bal;
-      if ((bal<-2) | (bal>2)) return -1;  // shouldn't ever happen
+      if ((bal<-2) | (bal>2)) return NULL;  // shouldn't ever happen
       
       node *x,*y,*z,*a,*b,*c,*d;
       
@@ -121,42 +155,62 @@ int rotate(node* n, node* newroot)
                   if (b) b->parent = y;
             }
             // LEFT-LEFT
-            if ((n->left_child->bal == 1) | (n->left_child->bal == 0))
-            {
-                  DBG("LL ROTATION\n\n");
-                  
-                  x = n;
-                  z = x->left_child;
-                  y = z->left_child;
+   
+            DBG("LL ROTATION\n\n");
+            
+            x = n;
+            z = x->left_child;
+            y = z->left_child;
 
-                  DBG("XYZ = %c, %c, %c\n",
-                  *(int*)x->data,*(int*)y->data,*(int*)z->data);
-                  
-                  newroot = z;
-                  
-                  a = y->left_child;
-                  b = y->right_child;
-                  c = z->right_child;
-                  d = x->right_child;
-                  
-                  
-                  z->parent = x->parent;
-                  
-                  if (x->parent) 
-                  {
-                        if ((x->parent->left_child) && (x->parent->left_child == x))
-                              z->parent->left_child = z;
-                        else if ((x->parent->right_child) && (x->parent->right_child == x))
-                              z->parent->right_child = z;
-                  }
-                  z->right_child = x;
-                  x->parent = z;
-                  x->left_child = c;
-                  if (c) c->parent = x;
-                  
-                  return 0;
+            DBG("XYZ = %c, %c, %c\n",
+            *(int*)x->data,*(int*)y->data,*(int*)z->data);
+            
+            a = y->left_child;
+            b = y->right_child;
+            c = z->right_child;
+            d = x->right_child;
+            
+            
+            z->parent = x->parent;
+            
+            if (x->parent) 
+            {
+                  if ((x->parent->left_child) && (x->parent->left_child == x))
+                        z->parent->left_child = z;
+                  else if ((x->parent->right_child) && (x->parent->right_child == x))
+                        z->parent->right_child = z;
             }
-            else return -2; // shouldn't ever happen
+            z->right_child = x;
+            x->parent = z;
+            x->left_child = c;
+            if (c) c->parent = x;
+            
+            // Extremely important!!!!!! 
+            // These heights will be
+            // re-calculated bottom-up when we rebalance
+            // this branch later, so if we don't update 
+            // the heights now, rebalance will see the old
+            // heights, i.e. the values prior to the rotation,
+            // and thus will think the branch is still not
+            // balanced!
+            
+            y->height =
+                  (a&&b) ? fmax(a->height, b->height) :
+                  a ? a->height :
+                  b ? b->height : -1;
+            y->height++;
+            
+            x->height =
+                  (c&&d) ? fmax(c->height, d->height) :
+                  c ? c->height :
+                  d ? d->height : -1;
+            x->height++;
+            
+            z->height = fmax(x->height, y->height);
+            z->height++;
+            
+            return z;
+ 
       }
       
       // RIGHT ROTATION
@@ -185,43 +239,56 @@ int rotate(node* n, node* newroot)
             }
             
             //RIGHT-RIGHT
-            if ((n->right_child->bal == -1) | (n->right_child->bal == 0))
+      
+            DBG("RR ROTATION\n\n");
+            
+            y = n;
+            z = y->right_child;
+            x = z->right_child;
+            
+            a = y->left_child;
+            b = z->left_child;
+            c = x->left_child;
+            d = x->right_child;
+            
+            z->parent = y->parent;
+            
+            if (y->parent) 
             {
-                  DBG("RR ROTATION\n\n");
-                  
-                  y = n;
-                  z = y->right_child;
-                  x = z->right_child;
-                  
-                  newroot = z;
-                  
-                  a = y->left_child;
-                  b = z->left_child;
-                  c = x->left_child;
-                  d = x->right_child;
-                  
-                  z->parent = y->parent;
-                  
-                  if (y->parent) 
-                  {
-                        if ((y->parent->left_child) && (y->parent->left_child == y))
-                              z->parent->left_child = z;
-                        else if ((y->parent->right_child) && (y->parent->right_child == y))
-                              z->parent->right_child = z;
-                  }
-                  
-                  
-                  z->left_child = y;
-                  y->parent = z;
-                  y->right_child = b;
-                  if(b) b->parent = y;
-                  
-                  return 0;
+                  if ((y->parent->left_child) && (y->parent->left_child == y))
+                        z->parent->left_child = z;
+                  else if ((y->parent->right_child) && (y->parent->right_child == y))
+                        z->parent->right_child = z;
             }
-            else return -3; // shouldn't ever happen
+            
+            
+            z->left_child = y;
+            y->parent = z;
+            y->right_child = b;
+            if(b) b->parent = y;
+            
+            
+            y->height =
+                  (a&&b) ? fmax(a->height, b->height) :
+                  a ? a->height :
+                  b ? b->height : -1;
+            y->height++;
+            
+            x->height =
+                  (c&&d) ? fmax(c->height, d->height) :
+                  c ? c->height :
+                  d ? d->height : -1;
+            x->height++;
+            
+            z->height = fmax(x->height, y->height);
+            z->height++;
+            
+            
+            return z;
+      
       }
       
-      else return 1;    // no balance needed bal=(-1,0,+1)
+      else return n;    // no balance needed bal=(-1,0,+1)
 }
 
 
@@ -278,15 +345,19 @@ void rebalance(binary_tree* bt, node* leaf)
             }
             
             
-            node* new_subtree_root = NULL;
 
+            #ifdef _VERBOSE
             DBG("\n====================\nBefore rotate\n=============\n\n");
             clean_burger(burg);
             print_tree(burg,bt->root,0.5,0.1, 0);
             print_burger(burg);
-            int rotate_err = rotate(next, new_subtree_root);
-     
+            #endif
             
+            node* new_subtree_root = rotate(next);
+            if (new_subtree_root) 
+            {
+                  next = new_subtree_root;
+            }
             
             node* r = bt->root;
             while (r)
@@ -297,20 +368,21 @@ void rebalance(binary_tree* bt, node* leaf)
                   r = r->parent;
             }
             
-            if (rotate_err==0) {
-            
+            #ifdef _VERBOSE
+            if (new_subtree_root) 
+            {
             DBG("\n====================\nAfter rotate\n=============\n\n");
             clean_burger(burg);
             print_tree(burg,bt->root,0.5,0.1, 0);
             print_burger(burg);
-
-}
+            }
+            #endif
      
-            if (rotate_err<0) break;
-            DBG("Rotated node %d (%c). newbal=%d\n",
-            *(int*)next->data, *(int*)next->data,next->bal);
-            
+            DBG("Finished checking node %d (%c), now checking " ,*(int*) next->data, *(int*) next->data);
             next = next->parent;
+            if(next) DBG("\tnode %d (%c)\n" ,*(int*) next->data, *(int*) next->data);
+            else DBG("(NULL - finished branch)\n");
+            
             branch_h++;
       }
 }
@@ -335,7 +407,8 @@ void visit(node* n)
       *(int*)n->data,
       n->parent?*(int*)n->parent->data:-1,
       n->parent?*(int*)n->parent->data:'*',
-      n->height);
+      n->height
+      );
 }
 
 
@@ -365,6 +438,7 @@ int main()
             DBG("\n\n===============\nPOST-INSERT\n===============\n\n");
             print_avl(burg, bt);            
       }
+      
       depth_first(bt, visit, IN_ORDER);
 
       
