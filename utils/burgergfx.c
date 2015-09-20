@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "debug.c"
-static inline void exchx(void** a, void** b) { void* p = *a; *a = *b; *b = p; }
+void exch(int* a, int* b) { int p = *a; *a = *b; *b = p; }
 
 typedef struct
 {
@@ -167,10 +167,14 @@ void put_line(burger* bgfx, double dx1, double dy1, double dx2, double dy2)
    
       int i = 0;
       
-      if (x2<x1) {exchx((void**)&x1,(void**)&x2);
-      exchx((void**)&y1,(void**)&y2);}
+      DBG("\n(before)DRAWING LINE @ (%d,%d, %d,%d)",x1,y1,x2,y2);
 
-      //DBG("\nDRAWING LINE @ (%d,%d, %d,%d)",x1,y1,x2,y2);
+      if (x2<x1) {
+        exch(&x1,&x2);
+        exch(&y1,&y2);
+        DBG("\nDRAWING LINE @ (%d,%d, %d,%d)",x1,y1,x2,y2);
+      }
+
       
       float a = (float)(y2-y1)/(float)(x2-x1);
 
