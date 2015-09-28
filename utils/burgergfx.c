@@ -24,6 +24,8 @@
 #include "debug.c"
 void exch(int* a, int* b) { int p = *a; *a = *b; *b = p; }
 
+float const default_spacing = 0.15;
+
 typedef struct
 {
       int w,h;
@@ -143,7 +145,7 @@ void print_burger(burger* bgfx)
       {
             for (j=0;j<bgfx->w;j++)
             {
-                  printf("%c ",bgfx->burger_matrix[i+(j*bgfx->w)]);
+                  printf("%c",bgfx->burger_matrix[i+(j*bgfx->w)]);
             }
             printf("\n");
       }
