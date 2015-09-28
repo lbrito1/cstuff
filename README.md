@@ -24,8 +24,6 @@ Here are a few basic algorithms and data structures implemented in C. Most have 
 
 ## To-do list
 - Data structures
- - Queue
- - Priority Queue
  - Set
  - Hash table
  - B-tree
