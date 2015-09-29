@@ -22,6 +22,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include "debug.c"
+
+int gt(int a, int b) { return a > b ? a : b; }
+int lt(int a, int b) { return a < b ? a : b; }
+
 void exch(int* a, int* b) { int p = *a; *a = *b; *b = p; }
 
 float const default_spacing = 0.15;
@@ -30,6 +34,7 @@ typedef struct
 {
       int w,h;
       char* burger_matrix;
+      int minx,maxx,miny,maxy; // framing
 } burger;
 
 /**
@@ -44,6 +49,10 @@ burger* create(int w, int h)
       burger* bgfx = malloc(sizeof(burger));
       bgfx->w = w; 
       bgfx->h = h;
+      bgfx->minx = w+1;
+      bgfx->miny = h+1;
+      bgfx->maxx = 0;
+      bgfx->maxy = 0;
       bgfx->burger_matrix = malloc(sizeof(char)*w*h);
       int i=0;
       for (;i<w*h;i++) bgfx->burger_matrix[i] = '.';
@@ -86,6 +95,14 @@ void clean_burger(burger* b)
       for (;i<b->w*b->h;i++) b->burger_matrix[i] = ' ';
 }
 
+void update_frame(burger* b, int x, int y)
+{
+    b->maxx = gt(x,b->maxx);
+    b->minx = lt(x,b->minx);
+    b->maxy = gt(y,b->maxy);
+    b->miny = lt(y,b->miny);
+}
+
 /**
  *  @brief Put char in cell
  *  
@@ -98,6 +115,7 @@ void put_burger(burger* b, double dx, double dy, char c)
 {
       int x = get_norm_x(b, dx);
       int y = get_norm_y(b, dy);
+      update_frame(b,x,y);
       b->burger_matrix[y+(x*b->w)] = c;
 }
 
@@ -111,6 +129,7 @@ void put_burger(burger* b, double dx, double dy, char c)
  */
 void put_burger_int(burger* b, int x, int y, char c)
 {
+      update_frame(b,x,y);
       b->burger_matrix[y+(x*b->w)] = c;
 }
 
@@ -132,7 +151,7 @@ void soft_put_burger_int(burger* b, int x, int y, char c)
 /**
  *  @brief Print the current burger
  *  
- *  @param [in] bgfx 
+     *  @param [in] bgfx 
  */
 void print_burger(burger* bgfx)
 {
@@ -141,14 +160,15 @@ void print_burger(burger* bgfx)
       printf("\n");
       for (;i<(bgfx->w/2)-2;i++) printf("  ");
       printf("Burger\n");
-      for (i=0;i<bgfx->h;i++)
+      for (i= bgfx->miny; i < lt(bgfx->maxy + 1, bgfx->h); i++)
       {
-            for (j=0;j<bgfx->w;j++)
+            for (j=bgfx->minx; j < lt(bgfx->maxx + 1, bgfx->w); j++)
             {
                   printf("%c",bgfx->burger_matrix[i+(j*bgfx->w)]);
             }
             printf("\n");
       }
+      DBG("\n[GFX] Current frame: min(%d, %d), max(%d, %d)",bgfx->minx,bgfx->miny,bgfx->maxx,bgfx->maxy);
 }
 
 /**
