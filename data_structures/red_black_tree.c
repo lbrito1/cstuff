@@ -40,7 +40,15 @@
 void rb_left_rotate(binary_tree* bt, node* n);
 void rb_right_rotate(binary_tree* bt, node* n);
 
-void rb_insert(binary_tree* bt, void* data) {
+void rb_insert(binary_tree* bt, void* data, int uniqueness) {
+    uniqueness = uniqueness ? uniqueness : 0;
+    if (uniqueness) {
+        node* n = tree_search(bt, data);
+        if (n) {
+            DBG("\nRepeated node %d (%c), uniqueness is activated. Aborting insertion", *(int*)data, *(char*)data);
+            return;
+        }
+    }
     node* n = new_node(data);
     tree_insert(bt, n);
     while(n != bt->root && n->parent->color == RED) {
@@ -48,14 +56,12 @@ void rb_insert(binary_tree* bt, void* data) {
         if (grandpa) { 
             if (grandpa->left_child == n->parent) {
                 node* uncle = grandpa->right_child;
-                if (uncle) {
-                    if (uncle->color == RED) {  //case 1
-                        DBG("\nCase 1 L");
-                        n->parent->color = BLACK;
-                        uncle->color = BLACK;
-                        grandpa->color = RED;
-                        n = grandpa;
-                    }
+                if (uncle && (uncle->color == RED)) {  //case 1
+                    DBG("\nCase 1 L");
+                    n->parent->color = BLACK;
+                    uncle->color = BLACK;
+                    grandpa->color = RED;
+                    n = grandpa;
                 }
                 if (n == bt->root) break;
                 if (!uncle || uncle->color == BLACK) {
@@ -65,21 +71,19 @@ void rb_insert(binary_tree* bt, void* data) {
                         rb_left_rotate(bt, n);
                     }
                     n->parent->color = BLACK;           // case 3
-                    grandpa->color = RED;
+                    n->parent->parent->color = RED;
                     rb_right_rotate(bt, grandpa);
                 }
                 
             }
             else if (grandpa->right_child == n->parent) {
                 node* uncle = grandpa->left_child;
-                if (uncle) {
-                    if (uncle->color == RED) {  //case 1
-                        DBG("\nCase 1 R");
-                        n->parent->color = BLACK;
-                        uncle->color = BLACK;
-                        grandpa->color = RED;
-                        n = grandpa;
-                    }
+                if (uncle && (uncle->color == RED)) {  //case 1
+                    DBG("\nCase 1 R");
+                    n->parent->color = BLACK;
+                    uncle->color = BLACK;
+                    grandpa->color = RED;
+                    n = grandpa;
                 }
                 if (n == bt->root) break;
                 if (!uncle || uncle->color == BLACK) {
@@ -89,8 +93,8 @@ void rb_insert(binary_tree* bt, void* data) {
                         rb_right_rotate(bt, n);
                     }
                     n->parent->color = BLACK;           // case 3
-                    grandpa->color = RED;
-                    rb_left_rotate(bt, grandpa);
+                    n->parent->parent->color = RED;
+                    rb_left_rotate(bt, n->parent->parent);
                     
                 }
             }
