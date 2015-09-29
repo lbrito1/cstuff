@@ -21,21 +21,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "colors.h"
 #include "debug.c"
+
+
 
 int gt(int a, int b) { return a > b ? a : b; }
 int lt(int a, int b) { return a < b ? a : b; }
 
 void exch(int* a, int* b) { int p = *a; *a = *b; *b = p; }
 
-float const default_spacing = 0.15;
+float const default_spacing = 0.1;
+int next_color = 0;
 
 typedef struct
 {
       int w,h;
       char* burger_matrix;
+      char** color_matrix;
       int minx,maxx,miny,maxy; // framing
 } burger;
+
+void put_line_int(burger* bgfx, int x1, int y1, int x2, int y2);
 
 /**
  *  @brief Create a new w x h burger
@@ -54,8 +61,12 @@ burger* create(int w, int h)
       bgfx->maxx = 0;
       bgfx->maxy = 0;
       bgfx->burger_matrix = malloc(sizeof(char)*w*h);
+      bgfx->color_matrix = malloc(sizeof(char*)*w*h);
       int i=0;
-      for (;i<w*h;i++) bgfx->burger_matrix[i] = '.';
+      for (;i<w*h;i++) {
+          bgfx->burger_matrix[i] = '.'; 
+          bgfx->color_matrix[i] = NULL;
+      }
       return bgfx;
 }
 
@@ -119,6 +130,25 @@ void put_burger(burger* b, double dx, double dy, char c)
       b->burger_matrix[y+(x*b->w)] = c;
 }
 
+int occupied(burger* b, int x, int y) 
+{
+    char candidate = b->burger_matrix[y+(x*b->w)];
+    if (!(candidate == ' ' || candidate == '.')) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+void put_burger_scooch(burger* b, double dx, double dy, char c, int direction)
+{
+      int x = get_norm_x(b, dx);
+      int y = get_norm_y(b, dy);
+      if (occupied(b, x, y)) x += direction;
+      update_frame(b,x,y);
+      b->burger_matrix[y+(x*b->w)] = c;
+}
+
+
 /**
  *  @brief Put char in cell
  *  
@@ -146,7 +176,13 @@ void soft_put_burger_int(burger* b, int x, int y, char c)
       if (b->burger_matrix[y+(x*b->w)] == ' ') put_burger_int(b,x,y,c);
 }
 
-
+void set_color_scooch(burger* b, double dx, double dy, char* color, int direction) 
+{
+    int x = get_norm_x(b, dx);
+    int y = get_norm_y(b, dy);
+    if (occupied(b, x, y)) x += direction;
+    b->color_matrix[y+(x*b->w)] = color;
+}
 
 /**
  *  @brief Print the current burger
@@ -155,16 +191,24 @@ void soft_put_burger_int(burger* b, int x, int y, char c)
  */
 void print_burger(burger* bgfx)
 {
-      
       int i = 0, j = 0;
+
+      //Header
       printf("\n");
-      for (;i<(bgfx->w/2)-2;i++) printf("  ");
-      printf("Burger\n");
-      for (i= bgfx->miny; i < lt(bgfx->maxy + 1, bgfx->h); i++)
+      int mid = ((bgfx->maxx-bgfx->minx)/2);
+      for (;i<mid;i++) printf(" ");
+      printf(ANSI_COLOR_GREEN "Burger" ANSI_COLOR_RESET);
+      printf("\n");
+      
+      //Content
+      for (i = bgfx->miny; i < lt(bgfx->maxy + 1, bgfx->h); i++)
       {
             for (j=bgfx->minx; j < lt(bgfx->maxx + 1, bgfx->w); j++)
             {
+                  char* color = bgfx->color_matrix[i+(j*bgfx->w)];
+                  if (color) printf("%s", color);
                   printf("%c",bgfx->burger_matrix[i+(j*bgfx->w)]);
+                  printf(ANSI_COLOR_RESET);
             }
             printf("\n");
       }
@@ -182,39 +226,34 @@ void print_burger(burger* bgfx)
  */
 void put_line(burger* bgfx, double dx1, double dy1, double dx2, double dy2)
 {
-      int x1 = get_norm_x(bgfx, dx1);
-      int y1 = get_norm_y(bgfx, dy1);
-      int x2 = get_norm_x(bgfx, dx2);
-      int y2 = get_norm_y(bgfx, dy2);
-   
-      int i = 0;
-      
-      DBG("\n(before)DRAWING LINE @ (%d,%d, %d,%d)",x1,y1,x2,y2);
+    int x1 = get_norm_x(bgfx, dx1);
+    int y1 = get_norm_y(bgfx, dy1);
+    int x2 = get_norm_x(bgfx, dx2);
+    int y2 = get_norm_y(bgfx, dy2);
+    put_line_int(bgfx, x1, y1, x2, y2); 
+}
 
-      if (x2<x1) {
+void put_line_int(burger* bgfx, int x1, int y1, int x2, int y2)
+{
+    if (x2<x1) {
         exch(&x1,&x2);
         exch(&y1,&y2);
         DBG("\nDRAWING LINE @ (%d,%d, %d,%d)",x1,y1,x2,y2);
-      }
+    }
 
-      
-      float a = (float)(y2-y1)/(float)(x2-x1);
-
-      
-      if (x1!=x2)
-      {
-            for (i=x1; i<x2 ;i++)
-            {
-                  int x = i - x1;
-                  int y = (int) (a*x) + y1;
-                  soft_put_burger_int(bgfx, i, y, '.');
-            }
-      }
-      else
-      {
-            for (i=y1; i<y2; i++)
-            {
-                  soft_put_burger_int(bgfx, x1, i, '.');
-            }
-      }
+    float a = (float)(y2-y1)/(float)(x2-x1);
+    int i;
+    if (x1!=x2) {
+        for (i=x1; i<x2 ;i++) {
+          int x = i - x1;
+          int y = (int) (a*x) + y1;
+          soft_put_burger_int(bgfx, i, y, '.');
+        }
+    }
+    else {
+        for (i=y1; i<y2; i++) {
+          soft_put_burger_int(bgfx, x1, i, '.');
+        }
+    }
 }
+
