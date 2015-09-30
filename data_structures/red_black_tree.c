@@ -65,15 +65,17 @@ void rb_insert(binary_tree* bt, void* data, int uniqueness) {
                 }
                 if (n == bt->root) break;
                 r_uncle = uncle(n, RIGHT);
-                if ((gran = grandpa(n)) && (!r_uncle || r_uncle->color == BLACK)) {
+                if (grandpa(n) && (!r_uncle || r_uncle->color == BLACK)) {
                     if (n == n->parent->right_child) { // case 2
                         DBG("Case 2 L\n");
                         n = n->parent;
                         rb_left_rotate(bt, n);
                     }
+                    DBG("Case 3 L\n");
                     if (n == bt->root) break;
                     n->parent->color = BLACK;           // case 3
-                    if (n->parent->parent) n->parent->parent->color = RED;
+                    gran = grandpa(n);
+                    if (gran) gran->color = RED;
                     rb_right_rotate(bt, gran);
                 }
                 
@@ -95,10 +97,12 @@ void rb_insert(binary_tree* bt, void* data, int uniqueness) {
                         n = n->parent;
                         rb_right_rotate(bt, n);
                     }
+                    DBG("Case 3 R\n");
                     if (n == bt->root) break;
                     n->parent->color = BLACK;           // case 3
-                    if (n->parent->parent) n->parent->parent->color = RED;
-                    if (n->parent->parent) rb_left_rotate(bt, n->parent->parent);
+                    gran = grandpa(n);
+                    if (gran) gran->color = RED;
+                    rb_left_rotate(bt, gran);
                     
                 }
             }
@@ -108,7 +112,7 @@ void rb_insert(binary_tree* bt, void* data, int uniqueness) {
 }
 
 void rb_left_rotate(binary_tree* bt, node* n) {
-    DBG("Performing LEFT ROTATE...\n");
+    DBG("Performing LEFT ROTATE (%c)...\n", *(char*)n->data);
     node* y = n->right_child;
 
     n->right_child = y->left_child;
@@ -132,7 +136,7 @@ void rb_left_rotate(binary_tree* bt, node* n) {
 }
 
 void rb_right_rotate(binary_tree* bt, node* n) {
-    DBG("Performing RIGHT ROTATE...\n");
+    DBG("Performing RIGHT ROTATE (%c)...\n", *(char*)n->data);
     node* y = n->left_child;
 
     n->left_child = y->right_child;
@@ -147,7 +151,7 @@ void rb_right_rotate(binary_tree* bt, node* n) {
             n->parent->right_child = y;
         }
         else {
-            n->parent->right_child = y;
+            n->parent->left_child = y;
         }
     }
 
