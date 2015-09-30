@@ -48,6 +48,22 @@ typedef struct
       int (*cmp) (void*, void*);
 } binary_tree;
 
+node* grandpa(node* n) {
+    return n->parent ? n->parent->parent : NULL;
+}
+
+node* uncle(node* n, int direction) {
+    if (!n->parent || !n->parent->parent) {
+        return NULL;
+    }
+    if (direction == LEFT) {
+        return n->parent->parent->left_child;
+    }
+    else if (direction == RIGHT) {
+        return n->parent->parent->right_child;
+    }
+}
+
 binary_tree* new_binary_tree(int (*cmp) (void*, void*), int order) 
 {
       binary_tree* bt = malloc(sizeof(binary_tree));
@@ -61,7 +77,7 @@ node* new_node(void* data)
 {
       node* n = malloc(sizeof(node));
       n->data = data;
-      DBG("New node #%d (%c)\n",*(int*)n->data,*(int*)n->data);
+      //DBG("New node #%d (%c)\n",*(int*)n->data,*(int*)n->data);
       n->parent = NULL;
       n->left_child = NULL;
       n->right_child = NULL;

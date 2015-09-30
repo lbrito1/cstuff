@@ -81,7 +81,7 @@ void tree_insert(binary_tree* bt, node* n)
             n->parent = prev;
             if (goes_to == LEFT)          set_child(prev, n, LEFT);
             else if (goes_to == RIGHT)    set_child(prev, n, RIGHT);
-            DBG("Node (#%d) inserted\n",*(int*)n->data);
+            DBG("%sNode (#%d) (%c) inserted\n%s",ANSI_COLOR_GREEN,*(int*)n->data,*(char*)n->data, ANSI_COLOR_RESET);
       }
       else  // tree is empty, insert @ root
       {
