@@ -197,7 +197,7 @@ void print_burger(burger* bgfx)
       printf("\n");
       int mid = ((bgfx->maxx-bgfx->minx)/2);
       for (;i<mid;i++) printf(" ");
-      printf(ANSI_COLOR_GREEN "Burger" ANSI_COLOR_RESET);
+      printf(ANSI_COLOR_YELLOW "Burger" ANSI_COLOR_RESET);
       printf("\n");
       
       //Content
@@ -212,7 +212,7 @@ void print_burger(burger* bgfx)
             }
             printf("\n");
       }
-      DBG("\n[GFX] Current frame: min(%d, %d), max(%d, %d)",bgfx->minx,bgfx->miny,bgfx->maxx,bgfx->maxy);
+      //DBG("[GFX] Current frame: min(%d, %d), max(%d, %d)\n",bgfx->minx,bgfx->miny,bgfx->maxx,bgfx->maxy);
 }
 
 /**

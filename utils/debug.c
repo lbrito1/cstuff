@@ -20,6 +20,8 @@
 
 //More info: http://gcc.gnu.org/onlinedocs/gcc/Variadic-Macros.html
 
+#include "colors.h"
+
 #ifdef _DEBUG
       #define DBG(u,...) printf(u,##__VA_ARGS__)
 #else
