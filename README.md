@@ -13,6 +13,7 @@ Here are a few basic algorithms and data structures implemented in C. Most have 
  - Binary tree
  - Binary search tree (BST)
  - AVL tree
+ - Red-black tree
 
 ##Algorithms
 - Sorting
@@ -27,7 +28,6 @@ Here are a few basic algorithms and data structures implemented in C. Most have 
  - Set
  - Hash table
  - B-tree
- - Red-black tree
 - Algorithms
  - Quicksort
  - Insertion sort
