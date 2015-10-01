@@ -78,7 +78,6 @@ void rb_insert(binary_tree* bt, void* data, int uniqueness) {
                     if (gran) gran->color = RED;
                     rb_right_rotate(bt, gran);
                 }
-                
             }
             else if (gran->right_child == n->parent) {
                 l_uncle = uncle(n, LEFT);
@@ -103,7 +102,6 @@ void rb_insert(binary_tree* bt, void* data, int uniqueness) {
                     gran = grandpa(n);
                     if (gran) gran->color = RED;
                     rb_left_rotate(bt, gran);
-                    
                 }
             }
         }

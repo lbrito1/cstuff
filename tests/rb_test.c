@@ -1,7 +1,7 @@
 /*
  *  File: rb_test.c
  *
- *  Compilation: gcc -D_DEBUG tests/rb_test.c -o tests/rb_test.bin -lm
+ *  Compilation: gcc -D_DEBUG tests/rb_test.c -o tests/rb_test.out -lm
  *
  *  You will need a terminal with ANSI escape code coloring to be able
  *  to see node colors.
