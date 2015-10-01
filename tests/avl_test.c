@@ -104,10 +104,9 @@ int main()
       {
             int* data = malloc(sizeof(int));
             *data = 65+(rand()%(25));
-            node* n = new_node((void*) data);
             DBG("\n\n===============\nPRE-INSERT\n===============\n\n");
             if (bt->root) print_avl(burg, bt);
-            avl_insert(bt, n);
+            avl_insert(bt, data, TRUE);
             DBG("\n\n===============\nPOST-INSERT\n===============\n\n");
             print_avl(burg, bt);            
       }

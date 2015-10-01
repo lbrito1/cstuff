@@ -363,12 +363,9 @@ void rebalance(binary_tree* bt, node* leaf)
  *  @param [in] n  
  *  @return 
  */
-void avl_insert(binary_tree* bt, node* n)
+node* avl_insert(binary_tree* bt, void* data, int uniqueness)
 {
-      #ifdef _DEBUG
-      if (tree_search(bt,n->data)) return;      //checks for repeated nodes
-      #endif
-
-      tree_insert(bt, n);   
-      rebalance(bt, n);
+    node *n = tree_insert(bt, data, uniqueness);
+    rebalance(bt, n);
+    return n;
 }

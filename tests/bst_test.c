@@ -21,10 +21,9 @@ int main()
       for(i=0;i<ts;i++) 
       {
             int* data = malloc(sizeof(int));
-            *data = rand()%(ts*10);
+            *data = 65+(rand()%ts);
             if (i==ts-1) to_delete = (void*)data;
-            node* n = new_node((void*) data);
-            tree_insert(bt, n);     
+            node* n = tree_insert(bt, data, TRUE);
             if (i==3) suc=n;
       }
       
@@ -35,7 +34,7 @@ int main()
       DBG("Tree min = %d\n",*(int*)min->data);
       
       node* sucn = tree_successor(bt, suc);
-      DBG("Successor to %d is %d\n",*(int*)suc->data,*(int*)sucn->data);
+      if (sucn) DBG("Successor to %d is %d\n",*(int*)suc->data,*(int*)sucn->data);
       
       node* del = tree_delete(bt, to_delete);
       DBG("Deleted node %d\n",*(int*)del->data);

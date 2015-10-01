@@ -38,6 +38,8 @@
 #include "binary_tree.c"
 
 
+node* tree_search(binary_tree* bt, void* val);
+
 /**
  *  @brief Insertion
  *  
@@ -47,47 +49,57 @@
  *  want to insert. 
  *  
  *  @param [in] bt 
- *  @param [in] n  
- *  @return Return_Description
+ *  @param [in] value  
+ *  @return new node
  */
-void tree_insert(binary_tree* bt, node* n)
+node *tree_insert(binary_tree* bt, void* data, int uniqueness)
 {
-      node* cur = bt->root;
-      node* prev = NULL;
-      int goes_to = -1;
+    node *n;
+    uniqueness = uniqueness ? uniqueness : 0;
+    if (uniqueness) {
+        n = tree_search(bt, data);
+        if (n) {
+            DBG("Repeated node %d (%c), uniqueness is enforced. Aborting insertion\n", *(int*)data, *(char*)data);
+            return n;
+        }
+    }
+    n = new_node(data);
+
+    node* cur = bt->root;
+    node* prev = NULL;
+    int goes_to = -1;
       
-      while(cur!=NULL)
-      {
-            prev = cur;
-            
-            
-            
-            if ( (bt->order == ORD_ASC) 
-                  ? bt->cmp(cur->data, n->data) < 0
-                  : bt->cmp(cur->data, n->data) > 0 ) 
-            {
-                  cur = cur->left_child;
-                  goes_to = LEFT;
-            }
-            else 
-            {
-                  cur = cur->right_child;
-                  goes_to = RIGHT;
-            }
-      }
+    while(cur!=NULL)
+    {
+          prev = cur;
+          
+          if ( (bt->order == ORD_ASC) 
+                ? bt->cmp(cur->data, n->data) < 0
+                : bt->cmp(cur->data, n->data) > 0 ) 
+          {
+                cur = cur->left_child;
+                goes_to = LEFT;
+          }
+          else 
+          {
+                cur = cur->right_child;
+                goes_to = RIGHT;
+          }
+    }
       
-      if (prev != NULL)
-      {
-            n->parent = prev;
-            if (goes_to == LEFT)          set_child(prev, n, LEFT);
-            else if (goes_to == RIGHT)    set_child(prev, n, RIGHT);
-            DBG("%sNode (#%d) (%c) inserted\n%s",ANSI_COLOR_GREEN,*(int*)n->data,*(char*)n->data, ANSI_COLOR_RESET);
-      }
-      else  // tree is empty, insert @ root
-      {
-            DBG("Node (#%d) set as ROOT\n",*(int*)n->data);
-            bt->root = n;
-      }
+    if (prev != NULL)
+    {
+          n->parent = prev;
+          if (goes_to == LEFT)          set_child(prev, n, LEFT);
+          else if (goes_to == RIGHT)    set_child(prev, n, RIGHT);
+          DBG("%sNode (#%d) (%c) inserted\n%s",ANSI_COLOR_GREEN,*(int*)n->data,*(char*)n->data, ANSI_COLOR_RESET);
+    }
+    else  // tree is empty, insert @ root
+    {
+          DBG("Node (#%d) set as ROOT\n",*(int*)n->data);
+          bt->root = n;
+    }
+    return n;
 }
 
 /**

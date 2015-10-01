@@ -40,17 +40,8 @@
 void rb_left_rotate(binary_tree* bt, node* n);
 void rb_right_rotate(binary_tree* bt, node* n);
 
-void rb_insert(binary_tree* bt, void* data, int uniqueness) {
-    uniqueness = uniqueness ? uniqueness : 0;
-    if (uniqueness) {
-        node* n = tree_search(bt, data);
-        if (n) {
-            DBG("Repeated node %d (%c), uniqueness is enforced. Aborting insertion\n", *(int*)data, *(char*)data);
-            return;
-        }
-    }
-    node* n = new_node(data);
-    tree_insert(bt, n);
+node* rb_insert(binary_tree* bt, void* data, int uniqueness) {
+    node *n = tree_insert(bt, data, uniqueness);
     node *gran, *r_uncle, *l_uncle;
     while(n != bt->root && n->parent->color == RED) {
         if (gran = grandpa(n)) { 
@@ -107,6 +98,7 @@ void rb_insert(binary_tree* bt, void* data, int uniqueness) {
         }
     }
     bt->root->color = BLACK;
+    return n;
 }
 
 void rb_left_rotate(binary_tree* bt, node* n) {
@@ -156,7 +148,5 @@ void rb_right_rotate(binary_tree* bt, node* n) {
     y->right_child = n;
     n->parent = y;
 }
-
-
 
 

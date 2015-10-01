@@ -43,7 +43,7 @@ typedef struct node
 
 typedef struct 
 {
-      node* root;
+      node *root, *nil;
       int order;
       int (*cmp) (void*, void*);
 } binary_tree;
@@ -68,6 +68,7 @@ binary_tree* new_binary_tree(int (*cmp) (void*, void*), int order)
 {
       binary_tree* bt = malloc(sizeof(binary_tree));
       bt->root = NULL;
+      bt->nil = NULL;
       bt->cmp = cmp;
       bt->order = order;
       return bt;
