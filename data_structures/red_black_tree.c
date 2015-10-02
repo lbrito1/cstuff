@@ -30,8 +30,10 @@
  *
  */
 
+#ifndef NOINCLUDE
 #include <math.h>
 #include "binary_search_tree.c"
+#endif
 
 #define RED 0
 #define BLACK 1

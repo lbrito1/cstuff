@@ -23,8 +23,10 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#ifndef NOINCLUDE
 #include <math.h>
 #include "binary_search_tree.c"
+#endif
 
 /**
  *  @brief AVL tree rotation
