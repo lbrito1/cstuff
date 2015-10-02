@@ -19,7 +19,6 @@ Here are a few basic algorithms and data structures implemented in C. Most have 
 - Sorting
  - Heapsort
  - Mergesort
- - Heapsort
 - Shortest path
  - Dijkstra's shortest path
 
