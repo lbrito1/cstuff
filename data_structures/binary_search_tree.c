@@ -99,6 +99,11 @@ node *tree_insert(binary_tree* bt, void* data, int uniqueness)
           DBG("Node (#%d) set as ROOT\n",*(int*)n->data);
           bt->root = n;
     }
+
+#ifdef _DEBUG
+    add(bt->insert_order,n->data);
+#endif
+
     return n;
 }
 

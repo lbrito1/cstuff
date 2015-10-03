@@ -22,6 +22,10 @@
 
 #include "../utils/debug.c"
 
+#ifdef _DEBUG
+#include "linked_list.c"
+#endif
+
 #define TRUE 1
 #define FALSE 0
 
@@ -46,6 +50,9 @@ typedef struct
       node *root, *nil;
       int order;
       int (*cmp) (void*, void*);
+#ifdef _DEBUG
+      linked_list* insert_order;
+#endif
 } binary_tree;
 
 node* grandpa(node* n) {
@@ -71,6 +78,9 @@ binary_tree* new_binary_tree(int (*cmp) (void*, void*), int order)
       bt->nil = NULL;
       bt->cmp = cmp;
       bt->order = order;
+#ifdef _DEBUG
+      bt->insert_order = new_list(compare_integer); 
+#endif
       return bt;
 }
 
@@ -104,6 +114,17 @@ void dfs(node* n, void (*visit) (node*), int v_order)
       }
 }
 
+int height(node* n) {
+    if (!n) {
+        return 0;
+    }
+    else {
+        int lh = height(n->left_child);
+        int rh = height(n->right_child);
+        return ((lh > rh) ? lh : rh) + 1;
+    }
+}
+
 void depth_first(binary_tree* bt, void (*visit) (node*), int v_order)
 {
       DBG("\nSTARTED DFS\n\n");
@@ -117,3 +138,21 @@ int set_child(node* parent, node* child, int c)
       else if (c==RIGHT) parent->right_child = child;
       return 0;
 }
+
+#ifdef _DEBUG
+void print_insert_order(binary_tree* bt) 
+{
+      if (bt->insert_order->size == 0) {
+            printf("\nList empty.");
+      }
+      else {
+            printf("\n======Insertion order======");
+            element *e = bt->insert_order->head;
+            int i = 0;
+            do {
+                  printf("\nList [%d]:\t%d (%C)",i++, *(int*) e->data, *(char*) e->data);
+            } while ((e = e->next) != NULL);
+            printf("\n==============\n");
+      }
+}
+#endif
