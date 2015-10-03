@@ -54,22 +54,20 @@ burger* burg;
 #endif
 
 
-void print_tree(burger* burg, node* r, float sx, float sy, int pair)
+void print_tree(burger* burg, node* r, float sx, float sy)
 {
+      float spacing = (r->height+1) * (r->height+1) * (default_spacing/10);
       put_burger(burg, sx,sy,*(char*)r->data);
       
-      float rf = 0;//(pair==0) ? -0.05 : 0;
-      
-      if (r->left_child) 
-      {
-            print_tree(burg, r->left_child, sx-0.1+rf, sy+0.1, (pair==0) ? 1 : 0);
-            put_line(burg, sx, sy, sx-0.1+rf, sy+0.1);
-      }
-      if (r->right_child) 
-      {
-            print_tree(burg, r->right_child,sx+0.1,sy+0.1, (pair==0) ? 1 : 0);
-            put_line(burg, sx, sy, sx+0.1+rf, sy+0.1);
-      }
+    if (r->left_child) {
+        print_tree(burg, r->left_child, sx-spacing, sy+spacing);
+        put_line(burg, sx, sy, sx-spacing, sy+spacing);
+    }
+    if (r->right_child) {
+        print_tree(burg, r->right_child,sx+spacing,sy+spacing);
+        put_line(burg, sx, sy, sx+spacing, sy+spacing);
+    }
+
 }
 
 #ifdef _DEBUG
@@ -88,27 +86,31 @@ void visit(node* n)
 void print_avl(burger* burg, binary_tree* bt)
 {
       clean_burger(burg);
-      print_tree(burg,bt->root,0.5,0.1, 0);
+      print_tree(burg,bt->root,0.5,0.1);
       print_burger(burg);
 }
 
 int main()
 {
-      burg = create(48,48);
+      burg = create(256,256);
       binary_tree* bt = new_binary_tree(compare_integer, ORD_ASC);
 
-      int ts = 8;     
+      int ts = 800;     
       srand(time(NULL));
       int i;
       for(i=0;i<ts;i++) 
       {
             int* data = malloc(sizeof(int));
-            *data = 65+(rand()%(25));
+            *data = 65+(rand()%(ts));
             DBG("\n\n===============\nPRE-INSERT\n===============\n\n");
+#ifndef NOGFX
             if (bt->root) print_avl(burg, bt);
+#endif
             avl_insert(bt, data, TRUE);
             DBG("\n\n===============\nPOST-INSERT\n===============\n\n");
+#ifndef NOGFX
             print_avl(burg, bt);            
+#endif
       }
       
       depth_first(bt, visit, IN_ORDER);
