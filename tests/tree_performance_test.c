@@ -60,8 +60,12 @@ double insert_nodes(int* data, int n, binary_tree* bt, node* (insert_fun(binary_
     double time = get_time();
     for(i=0; i<n; i++) 
     {           
+#ifdef WORST
+        data[i] = i;
+#else
         data[i] = rand()%(n*1000);
-        (*insert_fun) (bt, (void*) &data, TRUE);
+#endif
+        (*insert_fun) (bt, (void*) &data[i], TRUE);
     }
     return get_time() - time;
 }
@@ -76,7 +80,7 @@ double traversal(binary_tree* bt) {
 double search_nodes(int* data, int n, binary_tree* bt) {
     int i;
     double time = get_time();
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < (int)(n/100.0); i++) {
         int* val = &data[rand()%n];
         tree_search(bt, (void*) val);
     }
@@ -84,18 +88,18 @@ double search_nodes(int* data, int n, binary_tree* bt) {
 }
 
 void benchmark(double* insert_time, double* search_time, int i, node* (*insertion) (binary_tree* bt, void* data, int uniqueness)) {
-    int* data = malloc(sizeof(int)*i);
+    int* d = malloc(sizeof(int)*i);
     binary_tree* bst = new_binary_tree(compare_integer, ORD_ASC);
-    *insert_time = insert_nodes(data, i, bst, insertion);
-    *search_time = search_nodes(data, i, bst);
-    free(data);
+    *insert_time = insert_nodes(d, i, bst, insertion);
+    *search_time = search_nodes(d, i, bst);
+    free(d);
     free(bst);
 }
 
 int main(void)
 {
-#ifdef FINE
-    FILE *f = fopen("tree_performance_fine.csv", "w");
+#ifdef WORST
+    FILE *f = fopen("tree_performance_worst.csv", "w");
 #else
     FILE *f = fopen("tree_performance.csv", "w");
 #endif
@@ -106,16 +110,11 @@ int main(void)
     }
     fprintf(f,"n, bst_insert, bst_search, avl_insert, avl_search, rb_insert, rb_search\n");
 
-    int ts = 10000000;
-    int step = 10000;
-    int interpolation_thres = 1000000; 
-    int interpolation_step = step * 100;
+    int ts = 100000;
+    int step = 100;
+    int interpolation_thres = 10000; 
+    int interpolation_step = step * 10;
     int original_step = step;
-
-#ifdef FINE
-    ts = 1000000;
-    step = 1000;
-#endif
 
     int i;
     double bst_insert_time,bst_search_time,avl_insert_time,avl_search_time,rb_insert_time,rb_search_time;
@@ -151,7 +150,13 @@ int main(void)
             double t;
             for (j = i; j < i + step; j+= original_step) {
                 t = (j-i)/((double)step); 
-                fprintf(f,"%d,%f,%f,%f,%f,%f,%f\n", j, (bst_insert_time * (1 - t) + t * bst_insert_time_interp), bst_search_time, avl_insert_time, avl_search_time, rb_insert_time, rb_search_time);            
+                fprintf(f,"%d,%f,%f,%f,%f,%f,%f\n", j,
+                    (bst_insert_time * (1 - t) + t * bst_insert_time_interp), 
+                    (bst_search_time * (1 - t) + t * bst_search_time_interp), 
+                    (avl_insert_time * (1 - t) + t * avl_insert_time_interp), 
+                    (avl_search_time * (1 - t) + t * avl_search_time_interp), 
+                    (rb_insert_time * (1 - t) + t * rb_insert_time_interp), 
+                    (rb_search_time * (1 - t) + t * rb_search_time_interp)); 
             }
         }
     }
