@@ -132,7 +132,9 @@ node* rotate(node* n)
             y = z->left_child;
 
             DBG("XYZ = %c, %c, %c\n",
-            *(int*)x->data,*(int*)y->data,*(int*)z->data);
+            x ? *(int*)x->data : '*',
+            y ? *(int*)y->data : '*',
+            z ? *(int*)z->data : '*');
             
             a = y->left_child;
             b = y->right_child;
