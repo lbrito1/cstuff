@@ -80,7 +80,7 @@ double traversal(binary_tree* bt) {
 double search_nodes(int* data, int n, binary_tree* bt) {
     int i;
     double time = get_time();
-    for (i = 0; i < (int)(n/100.0); i++) {
+    for (i = 0; i < (int)(n/10.0); i++) {
         int* val = &data[rand()%n];
         tree_search(bt, (void*) val);
     }
@@ -111,10 +111,13 @@ int main(void)
     fprintf(f,"n, bst_insert, bst_search, avl_insert, avl_search, rb_insert, rb_search\n");
 
     int ts = 100000;
-    int step = 100;
+    int step = 1000;
     int interpolation_thres = 10000; 
     int interpolation_step = step * 10;
     int original_step = step;
+#ifndef WORST 
+    interpolation_thres = 99999999; // we don't need to interpolate when using avg case
+#endif
 
     int i;
     double bst_insert_time,bst_search_time,avl_insert_time,avl_search_time,rb_insert_time,rb_search_time;
