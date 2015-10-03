@@ -31,7 +31,7 @@ int lt(int a, int b) { return a < b ? a : b; }
 
 void exch(int* a, int* b) { int p = *a; *a = *b; *b = p; }
 
-float const default_spacing = 0.1;
+float const default_spacing = 0.02;
 int next_color = 0;
 
 typedef struct
@@ -181,6 +181,13 @@ void set_color_scooch(burger* b, double dx, double dy, char* color, int directio
     int x = get_norm_x(b, dx);
     int y = get_norm_y(b, dy);
     if (occupied(b, x, y)) x += direction;
+    b->color_matrix[y+(x*b->w)] = color;
+}
+
+void set_color(burger* b, double dx, double dy, char* color) 
+{
+    int x = get_norm_x(b, dx);
+    int y = get_norm_y(b, dy);
     b->color_matrix[y+(x*b->w)] = color;
 }
 

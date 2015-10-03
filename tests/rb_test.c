@@ -31,19 +31,22 @@ burger* burg;
 #endif
 
 
-void print_tree(burger* burg, node* r, float sx, float sy, int left)
+void print_tree(burger* burg, node* r, float sx, float sy)
 {
     char should_put = r->color == 0 ? 'R' : 'B';
-    set_color_scooch(burg, sx, sy, r->color == 0 ? ANSI_COLOR_RED : ANSI_COLOR_RESET, left);
-    put_burger_scooch(burg, sx,sy,*(char*) r->data, left);
+    set_color(burg, sx, sy, r->color == 0 ? ANSI_COLOR_RED : ANSI_COLOR_RESET);
+    put_burger(burg, sx,sy,*(char*) r->data);
+
+    int h = height(r);
+    float spacing = h * h * (default_spacing/10);
 
     if (r->left_child) {
-        print_tree(burg, r->left_child, sx-default_spacing, sy+default_spacing, 1);
-        put_line(burg, sx, sy, sx-default_spacing, sy+default_spacing);
+        print_tree(burg, r->left_child, sx-spacing, sy+spacing);
+        put_line(burg, sx, sy, sx-spacing, sy+spacing);
     }
     if (r->right_child) {
-        print_tree(burg, r->right_child,sx+default_spacing,sy+default_spacing, -1);
-        put_line(burg, sx, sy, sx+default_spacing, sy+default_spacing);
+        print_tree(burg, r->right_child,sx+spacing,sy+spacing);
+        put_line(burg, sx, sy, sx+spacing, sy+spacing);
     }
 }
 
@@ -55,7 +58,7 @@ void visit(node* n)
     *(int*)n->data,
     n->parent?*(int*)n->parent->data:-1,
     n->parent?*(int*)n->parent->data:'*',
-    n->height,
+    height(n),
     n->color
     );
 }
@@ -64,34 +67,41 @@ void visit(node* n)
 void print_rb(burger* burg, binary_tree* bt)
 {
     clean_burger(burg);
-    print_tree(burg,bt->root,0.5,0.1, 0);
+    print_tree(burg,bt->root,0.5,0.1);
     print_burger(burg);
 }
 
 int main(void)
 {
-    burg = create(48,48);
+    burg = create(256,256);
     binary_tree* bt = new_binary_tree(compare_integer, ORD_ASC);
        
-    int ts = 8;
+    int ts = 21;
     srand(time(NULL));
     int i;
 
-    //int predef[] = {76, 85, 81, 67, 72, 74, 86, 70};
+    int predef[] = {84,79,72,68,77,78,83,89,88,87,70,69,82,71,81,73,67,75,65,80,85};
 
     for(i=0;i<ts;i++) 
     {           
         DBG("\n\n===============\nPRE-INSERT\n===============\n\n");
+#ifndef NO_GFX
         if (bt->root) print_rb(burg, bt);
+#endif
         int* data = malloc(sizeof(int));
+        *data = predef[i];
+#ifdef RAND
         *data = 65+(rand()%(25));
-        //*data = predef[i];
+#endif
         rb_insert(bt, (void*)data, TRUE);
         DBG("\n\n===============\nPOST-INSERT\n===============\n\n");
+#ifndef NO_GFX
         print_rb(burg, bt);            
+#endif
+        depth_first(bt, visit, IN_ORDER);
+        print_insert_order(bt);
     }
     
-    depth_first(bt, visit, IN_ORDER);
     return 0;
 }
 #endif
