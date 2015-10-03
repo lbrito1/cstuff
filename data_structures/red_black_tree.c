@@ -55,6 +55,7 @@ node* rb_insert(binary_tree* bt, void* data, int uniqueness) {
                     r_uncle->color = BLACK;
                     gran->color = RED;
                     n = gran;
+                    continue;
                 }
                 if (n == bt->root) break;
                 r_uncle = uncle(n, RIGHT);
@@ -80,6 +81,7 @@ node* rb_insert(binary_tree* bt, void* data, int uniqueness) {
                     l_uncle->color = BLACK;
                     gran->color = RED;
                     n = gran;
+                    continue;
                 }
                 if (n == bt->root) break;
                 l_uncle = uncle(n, LEFT);
