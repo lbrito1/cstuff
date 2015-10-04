@@ -136,10 +136,10 @@ node* rotate(node* n)
             y ? *(int*)y->data : '*',
             z ? *(int*)z->data : '*');
             
-            a = y->left_child;
-            b = y->right_child;
-            c = z->right_child;
-            d = x->right_child;
+            a = y ? y->left_child : NULL;
+            b = y ? y->right_child : NULL;
+            c = z ? z->right_child : NULL;
+            d = x ? x->right_child : NULL;
             
             
             z->parent = x->parent;
@@ -165,19 +165,21 @@ node* rotate(node* n)
             // and thus will think the branch is still not
             // balanced!
             
+            if (y) {
             y->height =
-                  (a&&b) ? fmax(a->height, b->height) :
+                  (a&&b) ? fmax(a ? a->height : 0, b ? b->height : 0) :
                   a ? a->height :
                   b ? b->height : -1;
             y->height++;
-            
+            }
+            if (x) {
             x->height =
-                  (c&&d) ? fmax(c->height, d->height) :
+                  (c&&d) ? fmax(c ? c->height : 0, d ?  d->height : 0) :
                   c ? c->height :
                   d ? d->height : -1;
             x->height++;
-            
-            z->height = fmax(x->height, y->height);
+            }
+            z->height = fmax(x ? x->height : 0, y ? y->height : 0);
             z->height++;
             
             return z;
@@ -217,10 +219,10 @@ node* rotate(node* n)
             z = y->right_child;
             x = z->right_child;
             
-            a = y->left_child;
-            b = z->left_child;
-            c = x->left_child;
-            d = x->right_child;
+            a = y ? y->left_child : NULL;
+            b = z ? z->left_child : NULL;
+            c = x ? x->left_child : NULL;
+            d = x ? x->right_child: NULL;
             
             z->parent = y->parent;
             
@@ -233,27 +235,31 @@ node* rotate(node* n)
             }
             
             
-            z->left_child = y;
-            y->parent = z;
-            y->right_child = b;
+            if (z) z->left_child = y;
+            if (y) { 
+                y->parent = z;
+                y->right_child = b; 
+            }
             if(b) b->parent = y;
             
-            
+           if (y) {
             y->height =
                   (a&&b) ? fmax(a->height, b->height) :
                   a ? a->height :
                   b ? b->height : -1;
             y->height++;
-            
+           }
+           if (x) {
             x->height =
                   (c&&d) ? fmax(c->height, d->height) :
                   c ? c->height :
                   d ? d->height : -1;
             x->height++;
-            
-            z->height = fmax(x->height, y->height);
+           }
+           if (z) {
+            z->height = fmax(x ? x->height : 0, y ? y->height : 0);
             z->height++;
-            
+           }
             
             return z;
       
