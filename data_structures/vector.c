@@ -18,9 +18,11 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "comparators.c"
+#include "../utils/comparators.c"
+#include "../utils/debug.c"
 
 typedef struct
 {
@@ -95,11 +97,9 @@ int add(vector* v, void* data)
  *  @param [in] length length of the data array
  *  @return success(0) or failure(1)
  */
-int add_all(vector* v, void** data, int length)
-{
-     grow(v, length);
-     int i=0;
-     while (i<length) v->array[v->used++] = &(data[i++]);
+int add_all(vector* v, void** data, int length) {
+  int i=0;
+  for (;i < length;i++) add(v, data[i]);
 }
 
 /**
@@ -135,27 +135,10 @@ int delete(vector* v, void* data)
       return v->used;
 }
 
-#ifdef _DEBUGGING
 void print_vector(vector *v)
 {
-      printf("\nSIZE=%d\tUSED=%d\n==============",v->size,v->used);
+      DBG("\nSIZE=%d\tUSED=%d\n==============\n",(int)v->size,v->used);
       int i;
-      for (i=0;i<v->used;i++) printf("\n[%d]\t%d",i,*(int*)v->array[i]);
+      for (i=0;i<v->used;i++) printf("[%d]\t%d\n",i,*(int*)v->array[i]);
 }
 
-int main()
-{
-      vector* v = new_vector(2, sizeof(int), compare_integer);
-      vector* q = new_vector(2, sizeof(int), compare_integer);
-      
-     
-      static int y[] = {10,31,99,3,7,89,2,3};
-      static int z = 888;
-      add_all(v, (void**) y, 8);
-      add(v, &z);
-      delete(v, &y[0]);
-      print_vector(v);
-      
-      return 0;
-}
-#endif
