@@ -3,11 +3,13 @@
 // CC-BY Leonardo Brito
 // lbrito@gmail.com
 //======================
-#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef LIBMAKE
 #include "../utils/comparators.c"
+#endif
 
 #if !defined _TEST_SIZE_LIST && defined _DEBUGGING
 #define _TEST_SIZE_LIST 10
@@ -50,7 +52,7 @@ element *new_element(void *data)
       return e;
 }
 
-void add(linked_list *list, void *data)
+void add_ll(linked_list *list, void *data)
 {
       if (list->size == 0) 
       {
@@ -78,7 +80,7 @@ element *search(linked_list *list, void *data)
       return NULL;
 }
 
-int delete(linked_list *list, void *data)	
+int delete_ll(linked_list *list, void *data)	
 {
       element *searched = search(list, data);
       if (searched) 
@@ -113,7 +115,7 @@ linked_list *build_list()
             char numb[10];
             sprintf(numb, "%d", i);
             strcat(text1, numb);
-            add(list, text1);
+            add_ll(list, text1);
       }
       
       return list;
@@ -142,7 +144,7 @@ void test_delete(linked_list *list, int eln)
 {
       char data[20];
       sprintf(data, "I'm element number %d", eln);
-      if (delete(list, data)) printf("\nSuccessfully deleted element #%d, %d elems in list",eln,list->size); 
+      if (delete_ll(list, data)) printf("\nSuccessfully deleted element #%d, %d elems in list",eln,list->size); 
       else printf("\nElem #%d not found",eln);
 }
 
@@ -150,7 +152,7 @@ void test_add(linked_list *list, int eln)
 { 
       char *data = malloc(sizeof(char)*50);
       sprintf(data, "I'm NEW element number %d", eln);
-      add(list, data); 
+      add_ll(list, data); 
       printf("\nSuccessfully added NEW element #%d, %d elems in list",eln,list->size); 
 }
 

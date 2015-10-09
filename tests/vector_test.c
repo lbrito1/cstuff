@@ -20,9 +20,9 @@ int main()
 
   int *z = malloc(sizeof(int));
   *z = 888;
-  add_all(v, (void**) y, 8);
-  add(v, z);
-  delete(v, &y[0]);
+  add_all_vec(v, (void**) y, 8);
+  add_vec(v, z);
+  delete_vec(v, &y[0]);
   print_vector(v);
 
   return 0;

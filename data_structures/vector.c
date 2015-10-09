@@ -1,3 +1,6 @@
+//gcc data_structures/vector.c -shared -Wl,-soname,vector_library -o shared/vector_library.so -fPIC
+
+
 /*
     File: vector.c
 
@@ -21,6 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+    
 #include "../utils/comparators.c"
 #include "../utils/debug.c"
 
@@ -60,7 +64,7 @@ vector* new_vector(size_t s, size_t ts, int (*comparator) (void*, void*))
  *  @param [in] length expected increase
  *  @return success(0) or failure(1)
  */
-int grow(vector* v, int length)
+int grow_vec(vector* v, int length)
 {
       int ttlsize = v->used + length;
       int available = v->size;
@@ -82,9 +86,9 @@ int grow(vector* v, int length)
  *  @param [in] data
  *  @return success(0) or failure(1)
  */
-int add(vector* v, void* data)
+int add_vec(vector* v, void* data)
 {
-      if (grow(v,1) != 0) return 1;
+      if (grow_vec(v,1) != 0) return 1;
       v->array[v->used++] = data;
       return 0;
 }
@@ -97,9 +101,9 @@ int add(vector* v, void* data)
  *  @param [in] length length of the data array
  *  @return success(0) or failure(1)
  */
-int add_all(vector* v, void** data, int length) {
+int add_all_vec(vector* v, void** data, int length) {
   int i=0;
-  for (;i < length;i++) add(v, data[i]);
+  for (;i < length;i++) add_vec(v, data[i]);
 }
 
 /**
@@ -109,7 +113,7 @@ int add_all(vector* v, void** data, int length) {
  *  @param [in] data 
  *  @return index to searched data (-1 for failure)
  */
-int get(vector* v, void* data)
+int get_vec(vector* v, void* data)
 {
       if (v->used==0) return -1;
       int i=0;
@@ -126,9 +130,9 @@ int get(vector* v, void* data)
  *  @param [in] data 
  *  @return success(0) or failure(1)
  */
-int delete(vector* v, void* data)
+int delete_vec(vector* v, void* data)
 {
-      int idx = get(v, data);
+      int idx = get_vec(v, data);
       if (idx < 0) return idx;
       free(v->array[idx]);
       v->array[idx] = v->array[--v->used];
