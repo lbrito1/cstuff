@@ -1,6 +1,6 @@
 CFLAGS=-fPIC -DLIBMAKE
-LDFLAGS=-shared -Wl,-soname,sorts
-SRCS=quicksort.c mergesort.c heapsort.c insertion.c
+LDFLAGS=-shared -Wl,-soname,sorting
+SRCS:=$(wildcard src/*.c)
 
-../shared/sorts.so:
+../shared/sorting.so:
 	gcc $(SRCS) $(LDFLAGS) $(CFLAGS) $< -o $@

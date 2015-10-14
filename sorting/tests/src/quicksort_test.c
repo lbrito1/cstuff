@@ -1,6 +1,5 @@
-#include "../sorting/quicksort.h"
+#include "../../include/quicksort.h"
 
-#ifdef _DEBUG
 int main() {
   vector* v = new_vector(2, sizeof(int), compare_integer);
   int **y = malloc(sizeof(int*)*8);
@@ -21,4 +20,3 @@ int main() {
 
   return 0;
 }
-#endif

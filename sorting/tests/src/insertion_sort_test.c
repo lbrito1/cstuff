@@ -1,4 +1,4 @@
-#include "../sorting/include/insertionsort.h"
+#include "../../include/insertionsort.h"
 
 #ifdef _DEBUG
 int main() {
@@ -11,7 +11,7 @@ int main() {
     // *y[i] = rand()%1000;
     *y[i] = predef[i];
   }
-  add_all(v, (void**) y, 8);
+  add_all_vec(v, (void**) y, 8);
 
   DBG("\nArray:");
   print_vector(v);
