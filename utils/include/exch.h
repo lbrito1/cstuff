@@ -1,0 +1,1 @@
+static inline void exch(void** a, void** b) { void* p = *a; *a = *b; *b = p; }

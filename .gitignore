@@ -21,3 +21,4 @@
 *.csv
 *.png
 *.d
+bin/
