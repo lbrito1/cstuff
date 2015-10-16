@@ -47,14 +47,14 @@ typedef struct d_linked_list
       int (*cmp) (void*, void*);
 } d_linked_list;
 
-d_linked_list *new_list(int (*comparator) (void*, void*));
+d_linked_list *new_list_dl(int (*comparator) (void*, void*));
 
-d_element *new_d_element(void *data);
+d_element *new_element_dl(void *data);
 
-void add(d_linked_list *list, void *data);
+void add_dl(d_linked_list *list, void *data);
 
-d_element *search(d_linked_list *list, void *data);
+d_element *search_dl(d_linked_list *list, void *data);
 
-int delete(d_linked_list *list, void *data);
+int delete_dl(d_linked_list *list, void *data);
 
 #endif
