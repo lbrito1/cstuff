@@ -18,6 +18,7 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 #include "../../data_structures/include/heap.h"
+#include "../../utils/include/exch.h"
 
 void heapsort(heap* h)
 {

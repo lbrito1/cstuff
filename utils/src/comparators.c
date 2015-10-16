@@ -3,12 +3,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define TRUE 1
-#define FALSE 0
-
-#define ORD_ASC 0
-#define ORD_DES 1
-
 kv* new_kv(int ki, void* vi, int (*comp) (void*, void*))
 {
       kv* a = malloc(sizeof(kv));
@@ -56,4 +50,3 @@ kv* get_kv(void** array, int length, int key, int* pos)
       }
       return NULL;
 }
-
