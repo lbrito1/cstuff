@@ -3,7 +3,7 @@ CFILES=../../utils/include/debug.h ../../utils/src/burgergfx.c ../../utils/src/c
 TARGET=bin/$@.out
 SRC=./src/$@.c
 
-TESTS=$(CC) $(CFILES) $(SRC) -o $(TARGET) $(CFLAGS) 
+TESTS=$(CC) $(CFILES) $(SRC) -o $(TARGET) $(CFLAGS)
 
 linked_list_test:
 	$(TESTS)
