@@ -7,8 +7,7 @@
 #ifdef PYLIB
 #include <Python.h>
 #else
-#include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 #endif
 
 #include "../../utils/include/comparators.h"
