@@ -29,9 +29,9 @@
 
 #define NOINCLUDE
 
-#include "../data_structures/binary_search_tree.c"
-#include "../data_structures/avl_tree.c"
-#include "../data_structures/red_black_tree.c"
+#include "../data_structures/include/binary_search_tree.h"
+#include "../data_structures/include/avl_tree.h"
+#include "../data_structures/include/red_black_tree.h"
 
 double get_time()
 {
