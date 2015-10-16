@@ -33,16 +33,19 @@ typedef struct linked_list
       element *tail;
       unsigned size;
       int (*cmp) (void*, void*);
+      size_t typesize;
 } linked_list;
 
-linked_list *new_list(int (*comparator) (void*, void*));
+linked_list *new_list(int (*comparator) (void*, void*), size_t typesize);
 
-element *new_element(void *data);
+element *new_element(linked_list *list, void *data);
 
 void add_ll(linked_list *list, void *data);
 
 element *search(linked_list *list, void *data);
 
 int delete_ll(linked_list *list, void *data);
+
+void print_ll(linked_list *list);
 
 #endif
