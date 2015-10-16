@@ -30,6 +30,13 @@
  *
  */
 
+#ifdef PYLIB
+#include <Python.h>
+#else
+#include <stdio.h>
+#include <stdlib.h>
+#endif
+
 #include <math.h>
 #include "../include/binary_search_tree.h"
 #include "../../utils/include/debug.h"

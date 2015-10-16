@@ -18,6 +18,13 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#ifdef PYLIB
+#include <Python.h>
+#else
+#include <stdio.h>
+#include <stdlib.h>
+#endif
+
 #include "../include/doubly_linked_list.h"
 
 typedef d_linked_list stack;
@@ -25,12 +32,12 @@ typedef d_element elem;
 
 stack *new_stack(int (*comparator) (void*, void*))
 {
-      return new_list(comparator);
+      return new_list_dl(comparator);
 }
 
 void push_stack(stack* s, void *data)
 {
-      add(s, data);
+      add_dl(s, data);
 }
 
 void* pop_stack(stack* s)

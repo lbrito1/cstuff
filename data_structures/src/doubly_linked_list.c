@@ -20,9 +20,14 @@
 
 #include "../include/doubly_linked_list.h"
 
+#ifdef PYLIB
+#include <Python.h>
+#else
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#endif
+    
 #include "../../utils/include/comparators.h"
 
 #if !defined _TEST_SIZE_LIST && defined _DEBUGGING
@@ -38,7 +43,7 @@
  *  @param [in] comparator
  *  @return
  */
-d_linked_list *new_dl_list(int (*comparator) (void*, void*))
+d_linked_list *new_list_dl(int (*comparator) (void*, void*))
 {
       d_linked_list *l = malloc(sizeof(d_linked_list));
       l->size = 0;
@@ -52,7 +57,7 @@ d_linked_list *new_dl_list(int (*comparator) (void*, void*))
  *  @param [in] data 
  *  @return 
  */
-d_element *new_d_element(void *data)
+d_element *new_element_dl(void *data)
 {
       d_element *e = (d_element*) malloc(sizeof(d_element));
       e->data = data;
@@ -71,12 +76,12 @@ void add_dl(d_linked_list *list, void *data)
 {
       if (list->size == 0) 
       {
-            list->head = new_d_element(data);
+            list->head = new_element_dl(data);
             list->tail = list->head;
       }
       else
       {
-            d_element *toadd = new_d_element(data);
+            d_element *toadd = new_element_dl(data);
             list->tail->next = toadd;
             toadd->prev = list->tail;
             list->tail = toadd;
@@ -110,7 +115,7 @@ d_element *search_dl(d_linked_list *list, void *data)
  */
 int delete_dl(d_linked_list *list, void *data)	
 {
-      d_element *searched = search(list, data);
+      d_element *searched = search_dl(list, data);
       if (searched) 
       {
             int ishead = !list->cmp(searched->data, list->head->data);
@@ -152,7 +157,7 @@ int delete_dl(d_linked_list *list, void *data)
 
 d_linked_list *build_list() 
 {	
-      d_linked_list *list = new_list(compare_string);
+      d_linked_list *list = new_list_dl(compare_string);
       char *basetext = "I'm d_element number ";
       int i=1;
       for (;i<_TEST_SIZE_LIST;i++) 

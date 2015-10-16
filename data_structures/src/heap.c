@@ -18,7 +18,12 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#ifdef PYLIB
+#include <Python.h>
+#else
 #include <stdlib.h>
+#endif
+
 #include "../include/heap.h"
 #include "../../utils/include/comparators.h"
 #include "../../utils/include/exch.h"

@@ -20,8 +20,12 @@
 
 #include "../include/binary_tree.h"
 
+#ifdef PYLIB
+#include <Python.h>
+#else
 #include <stdlib.h>
-
+#endif
+    
 #include "../../utils/include/debug.h"
 #include "../../utils/include/comparators.h"
 #include "../include/linked_list.h"
@@ -60,7 +64,7 @@ binary_tree* new_binary_tree(int (*cmp) (void*, void*), int order)
       bt->cmp = cmp;
       bt->order = order;
 #ifdef _DEBUG
-      bt->insert_order = new_list(compare_integer); 
+      bt->insert_order = new_list(compare_integer, sizeof(int)); 
 #endif
       return bt;
 }
