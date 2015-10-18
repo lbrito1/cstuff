@@ -62,6 +62,12 @@ burger* create(int w, int h)
       return bgfx;
 }
 
+void delete_burger(burger* b) {
+  free(b->burger_matrix);
+  free(b->color_matrix);
+  free(b);
+}
+
 /**
  *  @brief Get the appropriate cell from a normalized x coordinate
  *  

@@ -22,6 +22,17 @@ linked_list *new_list(int (*comparator) (void*, void*), size_t typesize)
       return l;
 }
 
+void delete_linked_list(linked_list* l) {
+      element* e = l->head;
+      while (e) {
+            free(e->data);
+            element *t = e->next;
+            free(e);
+            e = t;
+      }
+      free(l);
+}
+
 element *new_element(linked_list *list, void *data)
 {
       element *e = (element*) malloc(sizeof(element));
@@ -45,7 +56,6 @@ void add_ll(linked_list *list, void *data)
             list->tail = list->tail->next;
       }
       ++list->size;
-      print_ll(list);
 }
 
 element *search(linked_list *list, void *data)

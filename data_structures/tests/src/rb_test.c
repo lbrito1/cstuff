@@ -108,6 +108,9 @@ int main(void)
         print_insert_order(bt);
     }
     
+    delete_tree(bt);
+    delete_burger(burg);
+
     return 0;
 }
 #endif

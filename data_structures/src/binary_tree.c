@@ -83,6 +83,27 @@ node* new_node(void* data)
       return n;
 }
 
+void delete_node(node* n) {
+  free(n->data);
+  free(n);
+}
+
+void dfs_delete(node* n) {
+  if (n != NULL) {
+    dfs_delete(n->left_child);
+    dfs_delete(n->right_child);
+    delete_node(n);
+  }
+}
+
+void delete_tree(binary_tree* bt) {
+  dfs_delete(bt->root);
+  #ifdef _DEBUG
+  delete_linked_list(bt->insert_order);
+  #endif
+  free(bt);
+}
+
 void dfs(node* n, void (*visit) (node*), int v_order)
 {
       if (n!=NULL) 

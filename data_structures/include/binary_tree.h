@@ -60,7 +60,11 @@ node* uncle(node* n, int direction);
 
 binary_tree* new_binary_tree(int (*cmp) (void*, void*), int order);
 
+void delete_tree(binary_tree* bt);
+
 node* new_node(void* data);
+
+void delete_node(node* n);
 
 void dfs(node* n, void (*visit) (node*), int v_order);
 
