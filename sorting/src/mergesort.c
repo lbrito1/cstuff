@@ -41,14 +41,18 @@ element* merge(element* a, element* b, int (*cmp) (void*, void*), int order);
  */
 element* mergesort(linked_list* list, int order)
 {
-      linked_list *left = new_list(list->cmp);
-      linked_list *right = new_list(list->cmp);
+      linked_list *left = new_list(list->cmp, sizeof(int));
+      linked_list *right = new_list(list->cmp, sizeof(int));
       
-      if (list->head == NULL || list->head->next == NULL) return list->head;
+      if (list->head == NULL || list->head->next == NULL) {
+        free(left);
+        free(right);
+        return list->head;
+      }
       
       halve(list, left, right);
       
-      element* merged = merge(mergesort(left, order),mergesort(right, order), list->cmp, order);
+      element* merged = merge(mergesort(left, order), mergesort(right, order), list->cmp, order);
       
       free(left);
       free(right);
@@ -89,7 +93,7 @@ void halve(linked_list* list, linked_list* left, linked_list* right)
  */
 element* merge(element* a, element* b, int (*cmp) (void*, void*), int order)
 {
-      element* c = new_element(NULL);
+      element* c = malloc(sizeof(element));
       element* merged = c;
       while (a != NULL && b != NULL) 
       {
@@ -106,37 +110,7 @@ element* merge(element* a, element* b, int (*cmp) (void*, void*), int order)
             c = c->next;
       }
       c->next = (a == NULL) ? b : a;
-      return merged->next;
+      element* next = merged->next;
+      free(merged);
+      return next;
 }
-
-#ifdef _DEBUGGING
-int main()
-{
-      linked_list* list = new_list(compare_integer);
-      
-      srand(time(NULL));
-      
-      int* x = malloc(sizeof(int)*_TEST_SIZE_MSORT);
-      
-      int i=0;
-      for (;i<_TEST_SIZE_MSORT;i++)
-      {
-            x[i] = rand();
-            add(list, &(x[i]));
-      }
-      
-      element* xx = list->head;
-      i=0;
-      do { printf("\n[%d]\t%d",i++,*((int*)xx->data)); 
-      } while ((xx=xx->next)!=NULL);
-
-      printf("\n\nSorted:");
-      xx = mergesort(list, DEC);
-      list->head = xx;
-      i=0;
-      do { printf("\n[%d]\t%d",i++,*((int*)xx->data)); 
-      } while ((xx=xx->next)!=NULL);
-
-      return 0;
-}
-#endif
