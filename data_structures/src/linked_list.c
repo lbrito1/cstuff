@@ -58,7 +58,7 @@ void add_ll(linked_list *list, void *data)
       ++list->size;
 }
 
-element *search(linked_list *list, void *data)
+element *search_ll(linked_list *list, void *data)
 {
       element *e = list->head;
       element *prev = e;
@@ -72,7 +72,7 @@ element *search(linked_list *list, void *data)
 
 int delete_ll(linked_list *list, void *data)	
 {
-      element *searched = search(list, data);
+      element *searched = search_ll(list, data);
       if (searched) 
       {
             int ishead = !(list->cmp(searched->data, list->head->data));
