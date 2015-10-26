@@ -19,6 +19,8 @@ linked_list *new_list(int (*comparator) (void*, void*), size_t typesize)
       l->size = 0;
       l->cmp = comparator;
       l->typesize = typesize;
+      l->head = NULL;
+      l->tail = NULL;
       return l;
 }
 
@@ -72,19 +74,49 @@ element *search_ll(linked_list *list, void *data)
 
 int delete_ll(linked_list *list, void *data)	
 {
-      element *searched = search_ll(list, data);
-      if (searched) 
-      {
-            int ishead = !(list->cmp(searched->data, list->head->data));
-            element *removed = (ishead) ? searched : searched->next;
-            if (!ishead) searched->next = searched->next->next;
-            else list->head = list->head->next;
-            free(removed->data);
-            free(removed);
+      // Special case: empty list
+      if (list->size == 0) return FALSE;
+
+      // Special case: list head
+      else if (list->head && (list->cmp(data, list->head->data)) == 0) {
+            free(list->head->data);
+            if (list->head->next) {
+                  list->head = list->head->next;
+            }
+            else {
+                  free(list->head); // head == tail, need only 1 free
+                  list->head = NULL;
+                  list->tail = NULL;
+            }
             --list->size;
             return TRUE;
       }
-      else return FALSE;
+
+      // General case: any element in list except head
+      else {
+            element *prev = search_ll(list, data);
+            if (prev) 
+            {
+                  element *toremove = prev->next;
+
+                  // Special case: list tail
+                  if (toremove == list->tail) {
+                        list->tail = prev;
+                        list->tail->next = NULL;
+                  }
+
+                  // General case: not tail
+                  else {
+                        prev->next = prev->next->next;
+                  }
+
+                  free(toremove->data);
+                  free(toremove);
+                  --list->size;
+                  return TRUE;
+            }
+            else return FALSE;
+      }
 }
 
 void print_ll(linked_list *list) 
@@ -94,14 +126,18 @@ void print_ll(linked_list *list)
       }
       else {
             element *e = list->head;
-            printf("\n----------------------------");
+            printf("\nPrinting list. Size = %d", list->size);
+            printf("\nhead = %d (%p)\t tail = %d (%p)", 
+                  *(int*) list->head->data, (void*) list->head,
+                  *(int*) list->tail->data, (void*) list->tail);
+            printf("\n----------------------------------");
             printf("\nList[idx]\tValue\tAddress");
-            printf("\n----------------------------");
+            printf("\n----------------------------------");
             int i = 0;
             do 
             {
                   printf("\nList [%d]:\t%d\t%p",i++,*(int*)e->data,(void*)e);
             } while ((e = e->next) != NULL);
-            printf("\n==============\n");
+            printf("\n----------------------------------\n");
       }
 }
