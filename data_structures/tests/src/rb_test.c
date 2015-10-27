@@ -79,7 +79,7 @@ void print_rb(burger* burg, binary_tree* bt)
 
 int main(void)
 {
-    burg = create(256,256);
+    burg = create_bgfx(256,256);
     binary_tree* bt = new_binary_tree(compare_integer, ORD_ASC);
        
     int ts = 21;

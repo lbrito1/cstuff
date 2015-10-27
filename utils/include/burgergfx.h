@@ -29,7 +29,7 @@ typedef struct {
       float default_spacing;
 } burger;
 
-burger* create(int w, int h);
+burger* create_bgfx(int w, int h);
 void delete_burger(burger* b);
 int get_norm_x(burger* b, double x);
 int get_norm_y(burger* b, double y);

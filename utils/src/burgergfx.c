@@ -42,7 +42,7 @@ int next_color = 0;
  *  @param [in] h height
  *  @return pointer to burger
  */
-burger* create(int w, int h)
+burger* create_bgfx(int w, int h)
 {
       burger* bgfx = malloc(sizeof(burger));
       bgfx->w = w; 
