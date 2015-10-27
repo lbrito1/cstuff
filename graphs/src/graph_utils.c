@@ -274,3 +274,7 @@ void clear_graph(graph* g, int data) {
       int i;
       for(i=0;i<get_nv(g);i++) get_vertex(g,i)->data = (void*)xx;
 }
+
+int get_vertex_data(graph* g, int idx) {
+      return *(int*) get_vertex(g, idx)->data;
+}

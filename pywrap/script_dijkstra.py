@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from cdepo.data_structures.graph import *
 
 dim = 32
@@ -11,3 +12,5 @@ start = 0
 finish = (dim**2)-2
 g.pathfind(start, finish)
 
+plt.imshow(g.bgfx_mat(), interpolation='nearest', cmap='Oranges')
+plt.show()

@@ -128,6 +128,11 @@ void put_burger(burger* b, double dx, double dy, char c)
       b->burger_matrix[y+(x*b->w)] = c;
 }
 
+
+char get_burger(burger* b, int x, int y) {
+  return b->burger_matrix[y+(x*b->w)];
+}
+
 int occupied(burger* b, int x, int y) 
 {
     char candidate = b->burger_matrix[y+(x*b->w)];

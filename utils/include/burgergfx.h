@@ -36,6 +36,7 @@ int get_norm_y(burger* b, double y);
 void clean_burger(burger* b);
 void update_frame(burger* b, int x, int y);
 void put_burger(burger* b, double dx, double dy, char c);
+char get_burger(burger* b, int x, int y);
 int occupied(burger* b, int x, int y);
 void put_burger_scooch(burger* b, double dx, double dy, char c, int direction);
 void put_burger_int(burger* b, int x, int y, char c);

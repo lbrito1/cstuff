@@ -58,4 +58,6 @@ void set_vertex(graph* g, int idx, void* data);
 
 void clear_graph(graph* g, int data);
 
+int get_vertex_data(graph* g, int idx);
+
 #endif
