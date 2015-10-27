@@ -1,5 +1,5 @@
 /*
-    File: al_graph.c
+    File: al_graph.h
 
     Copyright (c) 2014 Leonardo Brito <lbrito@gmail.com>
 
@@ -18,35 +18,23 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#ifndef AL_GRAPH_H
+#define AL_GRAPH_H
 
-#include "../../data_structures/include/linked_list.h"
+#include "graph_adj.h"
 
-#include "../include/graph_defs.h"
-#include "../include/al_graph.h"
-
-edge_iter* new_edge_it(graph* g, vertex* from)
+typedef struct edge_iter
 {
-      edge_iter* it = malloc(sizeof(edge_iter));
-      it->g = g;
-      it->origin = from;
-      it->head = g->adj_list[from->id]->head;
-      it->idx = 0;
-      it->length = g->adj_list[from->id]->size;
-      return it;
-}
+      graph* g;
+      vertex* origin;
+      element* head;
+      int idx, length;
+} edge_iter;
 
-edge* next_edge(edge_iter* it)
-{
-      if (++it->idx <= it->length)
-      {
-            edge* e = (edge*) it->head->data;
-            it->head = it->head->next;
-            return e;
-      }
-      else return NULL;
-}
+edge_iter* new_edge_it(graph* g, vertex* from);
 
-int visit_vert(graph* g, int idx)
-{
-      return visit(g->vertices[idx]);
-}
+edge* next_edge(edge_iter* it);
+
+int visit_vert(graph* g, int idx);
+
+#endif

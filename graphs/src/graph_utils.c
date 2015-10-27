@@ -18,10 +18,35 @@
     Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+#include "../include/graph_defs.h"
+#include "../include/graph_utils.h"
+#include "../include/al_graph.h"
 #include "../../utils/include/debug.h"
-#include "al_graph.c"
+#include "../../utils/include/burgergfx.h"
 #include <math.h>
 #include <assert.h>
+
+
+void print_trace(burger* b, graph* g, int* prev, int orig, int dest)
+{
+      DBG("\nTRACING FROM %d TO %d:\t",orig,dest);
+      int i=dest;
+      while ((i != orig) && (i<get_nv(g)))
+      {
+            DBG("%d, ",i);
+            vertex* t = get_vertex(g, i);
+            vertex* f = get_vertex(g, prev[i]);
+            if ((f!=NULL) && (t!=NULL)) put_line(b, f->x, f->y, t->x, t->y);
+            i = prev[i];
+      }
+}
+
+void put_wgt_rect(graph* g, int x1, int y1, int x2, int y2, int val)
+{
+      int i,j;
+      for (i=x1;i<x2;i++)
+            for (j=y1;j<y2;j++) put_weight(g,i,j,val);
+}
 
 /**
  *  @brief Build a complete graph
@@ -86,6 +111,7 @@ graph* build_matrix_graph(int nvert)
                   char* data = malloc(sizeof(int));
                   *data = ch < 200 ? ch : 97;
                   vertex* v = add_vertex(g, data);
+                  free(data);
                   v->x = j/(float)side;
                   v->y = i/(float)side;
             }
@@ -134,17 +160,99 @@ void put_weight(graph* g, int x, int y, int wg)
       edge_iter* it = new_edge_it(g, orig);
       
       edge* next = NULL;
-      while ((next = next_edge(it)) != NULL)
+      while (next = next_edge(it))
       {
             next->cost = wg;
-            DBG("\nUPD COST@[%d]->[%d] = %d",next->from->id,next->to->id,next->cost);
+            if (next->to && next->to->id) DBG("\nUPD COST@[%lu]->[%lu] = %d",next->from->id,next->to->id,next->cost);
       }
 }
 
 void print_vertices(graph* g)
 {
       int i=0;
-      printf("\nCurrently %lu elements",g->nv);
+      printf("\nCurrently %d elements",get_nv(g));
       printf("\n[ID]\tDATA\n=================");
-      for (;i<g->nv;i++) printf("\n[%lu]\t", g->vertices[i]->id);
+      for (;i<get_nv(g);i++) printf("\n[%lu]\t", g->vertices[i]->id);
+}
+
+
+void sendto(vertex* v, double x, double y)
+{
+      v->x = x; v->y = y;
+}
+
+void draw_vertices(graph* g, burger* b)
+{
+      int i;
+      for (i=0; i<get_nv(g); i++)
+      {
+            vertex* v = g->vertices[i];
+            put_burger(b, v->x, v->y, *((char*) v->data));
+      }
+}
+
+void draw_vertices_spec(graph* g, burger* b, int data)
+{
+      int i;
+      for (i=0; i<get_nv(g); i++)
+      {
+            vertex* v = g->vertices[i];
+            if ((*(int*)v->data) != data) put_burger(b, v->x, v->y, *((char*) v->data));
+      }
+}
+
+void draw_vertex_status(graph* g, burger* b)
+{
+      int i;
+      for (i=0; i<get_nv(g); i++)
+      {
+            vertex* v = g->vertices[i];
+            char c = v->status == UNMARKED ? 'u' : 'M';
+            put_burger(b, v->x, v->y, c);
+      }
+}
+
+void draw_edges(graph* g, burger* b)
+{
+      int i;
+      for (i=0; i<get_nv(g); i++)
+      {
+            element* head = g->adj_list[i]->head;
+             while (head != NULL) 
+             {
+                  vertex* from = g->vertices[i];
+                  if (from != NULL) 
+                  {
+                        void* dptr = head->data;
+                        if (dptr != NULL) 
+                        {
+                              edge* e = (edge*) dptr;
+                              vertex* to = e->to;
+                              if (to != NULL && to!=from) 
+                              {
+                                    #ifdef _DEBUG
+                                          printf("\n%d\t(%lu,%lu)\t@(%f,%f, %f,%f)",i,from->id,to->id,from->x,from->y,to->x,to->y);
+                                    #endif
+                                    put_line(b, from->x, from->y, to->x, to->y);
+                              }
+                        }
+                  }
+                  head = head->next;
+            }
+      }
+}
+
+void print_graph(graph* g, burger* bgfx)
+{
+      clean_burger(bgfx);
+      draw_edges(g, bgfx);
+      draw_vertices(g, bgfx);
+      print_burger(bgfx);
+}
+
+void print_vertex_status(graph* g, burger* bgfx)
+{
+      clean_burger(bgfx);
+      draw_vertex_status(g, bgfx);
+      print_burger(bgfx);
 }

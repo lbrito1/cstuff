@@ -19,33 +19,11 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include "../../utils/include/debug.h"
+#include "../include/graph_defs.h"
+#include "../include/graph_ve.h"
 
-#define UNMARKED 0
-#define MARKED 1
-#define TRUE 1
-#define FALSE 0
-
-typedef struct vertex
-{
-      unsigned long id;
-      int status;
-      double x,y;
-      void* data;
-} vertex;
-
-typedef struct edge
-{
-      vertex* from, *to;
-      int cost;
-} edge;
-
-/**
- *  @brief Create new vertex 
- *  
- *  @param [in] id   
- *  @param [in] data 
- *  @return 
- */
 vertex* new_vertex(unsigned long id, void* data)
 {
       vertex* v = malloc(sizeof(vertex));
@@ -57,44 +35,24 @@ vertex* new_vertex(unsigned long id, void* data)
       return v;
 }
 
-/**
- *  @brief Create new edge
- *  
- *  @param [in] from 
- *  @param [in] to   
- *  @param [in] cost 
- *  @return 
- */
 edge* new_edge(vertex* from, vertex* to, int cost)
 {
       edge* e = malloc(sizeof(edge));
       e->from = from;
       e->to = to;
       e->cost = cost;
+      // DBG("\nCreated edge %p \tv. %c (%p)\tv. %c (%p)", 
+      //   (void*) e, *(char*)e->from->data, (void*) e->from, 
+      //   *(char*)e->to->data, (void*) e->to);
       return e;
 }
 
-/**
- *  @brief Compare vertices
- *  
- *  @param [in] v1 
- *  @param [in] v2 
- *  @return TRUE if ids are the same
- */
 int compare_v(void* v1, void* v2) 
 {
       if ((v1 == NULL) | (v2 == NULL)) return -1;
       return ((((vertex*) v1)->id) == (((vertex*) v2)->id));
 }
 
-/**
- *  @brief Compare edges
- *  
- *  @param [in] e1 
- *  @param [in] e2 
- *  @return TRUE if to and from vertices are
- *  the same at both edges
- */
 int compare_e(void* e1, void* e2)
 {
       if ((e1 == NULL) | (e2 == NULL)) return -1;
@@ -102,12 +60,6 @@ int compare_e(void* e1, void* e2)
       && (((edge*)e1)->to->id) == (((edge*)e2)->to->id);
 }
 
-/**
- *  @brief Visit vertex v
- *  
- *  @param [in] v 
- *  @return 
- */
 int visit(vertex* v) 
 {
       if (v->status == UNMARKED) 

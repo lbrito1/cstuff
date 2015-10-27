@@ -1,6 +1,8 @@
 #include <limits.h>
-#include "../tests/graph_test.c"
-#include "../data_structures/include/heap.h"
+#include "../../utils/include/debug.h"
+#include "../../data_structures/include/heap.h"
+#include "../include/graph_defs.h"
+#include "../include/al_graph.h"
 
 int* dijkstra(graph* g, int from, int to)
 {
@@ -16,12 +18,12 @@ int* dijkstra(graph* g, int from, int to)
             dist[i] = INT_MAX;
             previous[i] = -1;
             kv* val = new_kv(i, (void*) &dist[i], compare_integer);
-            push(minheap, val);
+            push_heap(minheap, val);
             
             #ifdef _DEBUG
                   edge_iter* itd = new_edge_it(g,get_vertex(g,i));
                   edge* next = NULL;
-                  while ((next = next_edge(itd)) != NULL) DBG("\n%d\tE(%lu,%lu) = %d",itd->idx,next->from->id,next->to->id,next->cost ) ;
+                  while ((next = next_edge(itd)) != NULL) if (next->to) DBG("\n%d\tE(%lu,%lu) = %d",itd->idx,next->from->id,next->to->id,next->cost ) ;
                   free(itd);
             #endif
       }
@@ -31,7 +33,7 @@ int* dijkstra(graph* g, int from, int to)
       previous[from]    = -1;
       
       kv* min = NULL; int found = FALSE;
-      while (((min = pop(minheap)) != NULL) && !found)
+      while (((min = pop_heap(minheap)) != NULL) && !found)
       {
             int u = min->k;
             visit_vert(g,u);
@@ -43,6 +45,7 @@ int* dijkstra(graph* g, int from, int to)
             DBG("\n\n\nNEIGHBORS OF v[%d]:\n--------------------",u);
             while ((next = next_edge(it)) != NULL)
             {
+                  if (!next->to) return FALSE;
                   int v = next->to->id;
                   int ndist = dist[u] + next->cost;
                   DBG("\nv[%d]",v);
@@ -58,7 +61,7 @@ int* dijkstra(graph* g, int from, int to)
                         
                         int vpos = -1;
                         kv* candidate = get_kv(minheap->array, minheap->heap_size, v, &vpos);
-                        if (candidate !=NULL) update(minheap, vpos);
+                        if (candidate !=NULL) update_heap(minheap, vpos);
                   }
             }
             

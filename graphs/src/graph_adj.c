@@ -1,57 +1,8 @@
+#include "../include/graph_defs.h"
+#include "../include/graph_adj.h"
 #include <limits.h>
 
 #include "../../data_structures/include/linked_list.h"
-
-#define DIRECTED 0
-#define UNDIRECTED 1
-
-#define UNMARKED 0
-#define MARKED 1
-
-typedef struct vertex
-{
-      unsigned long id;
-      int status;
-      double x,y;
-      void* data;
-} vertex;
-
-typedef struct edge
-{
-      vertex* from, *to;
-      int cost;
-} edge;
-
-typedef struct graph
-{
-      vertex** vertices;
-      int directed;
-      unsigned long max_vertices;
-      unsigned long n_edges;
-      unsigned long v_counter;
-      linked_list** adj_list;
-      void (*printvert) (void*);
-} graph;
-
-int compare_v(void* v1, void* v2) 
-{
-      return ((((vertex*) v1)->id) == (((vertex*) v2)->id));
-}
-
-int compare_e(void* e1, void* e2)
-{
-      return 0;   // TODO
-}
-
-int visit(graph* g, int vid) 
-{
-      if (g->vertices[vid]->status == UNMARKED) 
-      {
-            g->vertices[vid]->status = MARKED;
-            return TRUE;
-      }
-      return FALSE;
-}
 
 graph* new_graph(int n_vertices, int directed)
 {
@@ -63,28 +14,8 @@ graph* new_graph(int n_vertices, int directed)
       g_p->n_edges = 0;
       g_p->adj_list = malloc(sizeof(linked_list*)*g_p->max_vertices);
       int i=0;
-      for (;i<g_p->max_vertices;i++) g_p->adj_list[i] = new_list(compare_e);
+      for (;i<g_p->max_vertices;i++) g_p->adj_list[i] = new_list(compare_e, sizeof(edge));
       return g_p;
-}
-
-vertex* new_vertex(unsigned long id, void* data)
-{
-      vertex* v = malloc(sizeof(vertex));
-      v->data = data;
-      v->status = UNMARKED;
-      v->id = id;
-      v->x = 0.0;
-      v->y = 0.0;
-      return v;
-}
-
-edge* new_edge(vertex* from, vertex* to, int cost)
-{
-      edge* e = malloc(sizeof(edge));
-      e->from = from;
-      e->to = to;
-      e->cost = cost;
-      return e;
 }
 
 edge* get_edge(graph* g, int from, int to)
@@ -101,10 +32,6 @@ vertex* add_vertex(graph* g, void* data)
       if (pos < g->max_vertices) 
       {
             v = (g->vertices[pos] = new_vertex(pos, data));
-            
-            //prepare adjlist
-            add((g->adj_list[pos]), NULL);
-            
             g->v_counter++;
       }
       else
@@ -115,38 +42,33 @@ vertex* add_vertex(graph* g, void* data)
       return v;
 }
 
+vertex* get_vertex(graph* g, int idx)
+{
+      if (idx>get_nv(g)) return NULL;
+      return g->vertices[idx];
+}
 
 void add_edge(graph* g, vertex* vf, vertex* vt, int cost)
 {
-      add((g->adj_list[vf->id]), new_edge(vf,vt,cost));
-      if (g->directed == UNDIRECTED) add((g->adj_list[vt->id]), new_edge(vt,vf,cost)); 
+      #ifdef _DEBUG
+      // if (g->directed == UNDIRECTED) printf("\nAdding UNDIRECTED edges");
+      #endif
+
+      edge* e_fro = new_edge(vf,vt,cost), *e_to;
+      add_ll((g->adj_list[vf->id]), e_fro);
+      if (g->directed == UNDIRECTED) {
+            e_to = new_edge(vt,vf,cost);
+            add_ll((g->adj_list[vt->id]), e_to); 
+      }
+
+      #ifdef _DEBUG
+      // if (g->directed == UNDIRECTED) {
+      //       printf("\nAdded %p and %p", (void*) e_fro, (void*) e_to);
+      // }
+      #endif
 }
 
-//    tests
-
-void print_vertices(graph* g)
+int get_nv(graph* g)
 {
-      int i=0;
-      printf("\nCurrently %lu elements",g->v_counter);
-      printf("\n[ID]\tDATA\n=================");
-      for (;i<g->v_counter;i++) printf("\n[%lu]\t", g->vertices[i]->id);
+      return g->v_counter;
 }
-/*
-int main()
-{
-      graph* g = new_graph(10);
-      char* mydata = "Test";
-      char* mydata2 = "Test2";
-      char* mydata3 = "Test3";
-      
-      vertex* v1 = add_vertex(g, mydata);
-      vertex* v2 = add_vertex(g, mydata2);
-      vertex* v3 = add_vertex(g, mydata3);
-      
-      add_edge(g, v1, v2);
-      
-      print_vertices(g);
-      
-      return 0;
-}
-*/
