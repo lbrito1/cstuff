@@ -34,6 +34,8 @@ void put_weight(graph* g, int x, int y, int wg);
 
 void put_wgt_rect(graph* g, int x1, int y1, int x2, int y2, int val);
 
+void print_path(graph* g, int* d);
+
 void print_trace(burger* b, graph* g, int* prev, int orig, int dest);
 
 void print_vertices(graph* g);
@@ -51,5 +53,9 @@ void draw_edges(graph* g, burger* b);
 void print_graph(graph* g, burger* bgfx);
 
 void print_vertex_status(graph* g, burger* bgfx);
+
+void set_vertex(graph* g, int idx, void* data);
+
+void clear_graph(graph* g, int data);
 
 #endif

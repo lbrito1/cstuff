@@ -27,6 +27,13 @@
 #include <assert.h>
 
 
+void print_path(graph* g, int* d)
+{
+      int i = 0;
+      DBG("\nPrevious\n===============\n");
+      for (i=0; i<get_nv(g); i++) DBG("\nvert[%d]\t%d",i,d[i]);
+}
+
 void print_trace(burger* b, graph* g, int* prev, int orig, int dest)
 {
       DBG("\nTRACING FROM %d TO %d:\t",orig,dest);
@@ -255,4 +262,15 @@ void print_vertex_status(graph* g, burger* bgfx)
       clean_burger(bgfx);
       draw_vertex_status(g, bgfx);
       print_burger(bgfx);
+}
+
+void set_vertex(graph* g, int idx, void* data) {
+      get_vertex(g, idx)->data = data;
+}
+
+void clear_graph(graph* g, int data) {
+      int* xx = malloc(sizeof(int));
+      *xx = data;
+      int i;
+      for(i=0;i<get_nv(g);i++) get_vertex(g,i)->data = (void*)xx;
 }

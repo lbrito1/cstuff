@@ -49,7 +49,7 @@ int main()
       
       // testing
       
-      burger* bgfx = create(48,48);
+      burger* bgfx = create_bgfx(48,48);
       
       print_graph(g,bgfx);
       
