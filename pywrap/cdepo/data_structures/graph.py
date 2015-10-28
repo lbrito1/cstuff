@@ -23,18 +23,22 @@ class Graph():
 		fs_str = ct.c_char('F')
 		libgraph.set_vertex(self.cgraph, start, ct.byref(st_str))
 		libgraph.set_vertex(self.cgraph, end, ct.byref(fs_str))
-		d = self.dijkstra(0, -1)
+
+		dists = libgraph.allocate_arr(self.cgraph)
+		d = self.dijkstra(0, -1, dists)
+
 		libutil.clean_burger(self.bgfx)
 		libgraph.print_trace(self.bgfx, self.cgraph, d, start, end)
-		libgraph.draw_vertices_spec(self.cgraph, self.bgfx, 1);
+		libgraph.draw_vertices_spec(self.cgraph, self.bgfx, 1)
 		libutil.print_burger(self.bgfx)
+		return dists
 
-	def dijkstra(self, start, end):
-		d = libgraph.dijkstra(self.cgraph, start, end, None)
+	def dijkstra(self, start, end, dists = None):
+		d = libgraph.dijkstra(self.cgraph, start, end, dists)
 		libgraph.print_path(self.cgraph, d)
 		return d
 
-	def to_matrix(self):
+	def dist_mat(self, dists):
 		if not self.m: 
 			print "Graph is not matricial!"
 		else:
@@ -42,7 +46,7 @@ class Graph():
 			for i in range(0, self.m):
 				row = []
 				for j in range(0, self.m):
-					row.append(libgraph.get_vertex_data(self.cgraph, (i*self.m)+j))
+					row.append(libgraph.get_elem(dists, (i*self.m)+j))
 				mat.append(row)
 			return mat
 

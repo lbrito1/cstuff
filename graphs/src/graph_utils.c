@@ -279,3 +279,11 @@ void clear_graph(graph* g, int data) {
 int get_vertex_data(graph* g, int idx) {
       return *(int*) get_vertex(g, idx)->data;
 }
+
+int* allocate_arr(graph* g) {
+      return malloc(sizeof(int)*get_nv(g));
+}
+
+int get_elem(int* array, int i) {
+      return array[i];
+}

@@ -10,7 +10,10 @@ put_rect(g, 10,15,12,32)
 
 start = 0
 finish = (dim**2)-2
-g.pathfind(start, finish)
+dists = g.pathfind(start, finish)
 
-plt.imshow(g.bgfx_mat(), interpolation='nearest', cmap='Oranges')
+# plt.imshow(g.bgfx_mat(), interpolation='nearest', cmap='Oranges')
+# plt.show()
+
+plt.imshow(g.dist_mat(dists), interpolation='nearest', cmap='gnuplot')
 plt.show()

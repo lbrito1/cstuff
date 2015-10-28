@@ -60,4 +60,8 @@ void clear_graph(graph* g, int data);
 
 int get_vertex_data(graph* g, int idx);
 
+int get_elem(int* array, int i);
+
+int* allocate_arr(graph* g);
+
 #endif
