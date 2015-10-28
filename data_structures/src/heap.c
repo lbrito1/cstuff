@@ -52,6 +52,12 @@ heap* new_heap(int size, int ord, int (*compare) (void*, void*))
       return h;
 }
 
+void delete_heap(heap* h)
+{
+  free(h->array);
+  free(h);
+}
+
 /**
  *  @brief Heapifies subtree rooted at h->array[idx], assuming
  *  that its two subtree children are already heaps. This is done

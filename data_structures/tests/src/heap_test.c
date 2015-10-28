@@ -28,6 +28,8 @@ int main()
             int* x = pop_heap(h);
             if (x!=NULL) printf("\n[%d]\t%d",i+1,*x);
       }
+
+      delete_heap(h);
       
       return 0;
 }
