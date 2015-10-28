@@ -75,7 +75,7 @@ graph* build_complete_graph(int nvert)
             {
                   int* data = malloc(sizeof(int));
                   *data = j+(i*side);
-                  vertex* v = add_vertex(g, data,sizeof(int));
+                  vertex* v = add_vertex(g, data, sizeof(int));
                   free(data);
                   v->x = j/(float)side;
                   v->y = i/(float)side;
@@ -118,7 +118,7 @@ graph* build_matrix_graph(int nvert)
             {
                   char* data = malloc(sizeof(int));
                   *data = ch < 200 ? ch : 97;
-                  vertex* v = add_vertex(g, data,sizeof(int));
+                  vertex* v = add_vertex(g, data, sizeof(int));
                   free(data);
                   v->x = j/(float)side;
                   v->y = i/(float)side;
