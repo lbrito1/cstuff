@@ -46,7 +46,7 @@ int main()
       
       burger* bgfx = create_bgfx(res,res);
       
-      int* d = dijkstra(g,0,-1);
+      int* d = dijkstra(g,0,-1,NULL);
       
       print_graph(g,bgfx);
       
@@ -66,7 +66,7 @@ int main()
 
       g = build_matrix_graph(res*res);
       
-      clear_graph(g, 1)
+      clear_graph(g, 1);
       char st = 'S', fs = 'F';
       get_vertex(g,start)->data = (void*) &st;
       get_vertex(g,finish)->data = (void*) &fs;
@@ -75,7 +75,7 @@ int main()
       put_wgt_rect(g, 2,10,32,13,WALL_VAL);
       put_wgt_rect(g, 10,15,12,32,WALL_VAL);
             
-      d = dijkstra(g,0,-1);
+      d = dijkstra(g,0,-1,NULL);
       clean_burger(bgfx);
       print_trace(bgfx,g,d,start,finish);
       draw_vertices_spec(g,bgfx,1);

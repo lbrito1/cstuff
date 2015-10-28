@@ -4,11 +4,16 @@
 #include "../include/graph_defs.h"
 #include "../include/al_graph.h"
 
-int* dijkstra(graph* g, int from, int to)
+int* dijkstra(graph* g, int from, int to, int* dist)
 {
       int nv = get_nv(g); 
       
-      int* dist         = malloc(sizeof(int)*nv);
+      int should_scrap_dist = FALSE;
+
+      if (!dist) {
+            dist = malloc(sizeof(int)*nv);
+            should_scrap_dist = TRUE;
+      }
       int* previous     = malloc(sizeof(int)*nv);
       heap* minheap = new_heap(nv, ORD_ASC, compare_kv);
       
@@ -64,9 +69,14 @@ int* dijkstra(graph* g, int from, int to)
                         if (candidate !=NULL) update_heap(minheap, vpos);
                   }
             }
+            free(it);
             
             if (u==to) found = TRUE;
       }
+
+      //cleanup
+      delete_heap(minheap);
+      if (should_scrap_dist) free(dist);
       
       return previous;
 }
