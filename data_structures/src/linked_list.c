@@ -35,6 +35,17 @@ void delete_linked_list(linked_list* l) {
       free(l);
 }
 
+void custom_delete_linked_list(linked_list* l, void (*delfun) (void*)) {
+      element* e = l->head;
+      while (e) {
+            delfun(e->data);
+            element *t = e->next;
+            free(e);
+            e = t;
+      }
+      free(l);
+}
+
 element *new_element(linked_list *list, void *data)
 {
       element *e = (element*) malloc(sizeof(element));

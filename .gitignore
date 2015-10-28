@@ -21,4 +21,5 @@
 *.csv
 *.png
 *.d
+*.pyc
 bin/

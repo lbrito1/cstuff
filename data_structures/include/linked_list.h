@@ -40,6 +40,8 @@ linked_list *new_list(int (*comparator) (void*, void*), size_t typesize);
 
 void delete_linked_list(linked_list* l);
 
+void custom_delete_linked_list(linked_list* l, void (*delfun) (void*));
+
 element *new_element(linked_list *list, void *data);
 
 void add_ll(linked_list *list, void *data);
