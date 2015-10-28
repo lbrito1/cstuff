@@ -30,7 +30,7 @@ class Graph():
 		libutil.print_burger(self.bgfx)
 
 	def dijkstra(self, start, end):
-		d = libgraph.dijkstra(self.cgraph, start, end)
+		d = libgraph.dijkstra(self.cgraph, start, end, None)
 		libgraph.print_path(self.cgraph, d)
 		return d
 
