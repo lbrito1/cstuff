@@ -21,6 +21,8 @@
 #ifndef GRAPH_VE_H
 #define GRAPH_VE_H
 
+#include <stdlib.h>
+
 typedef struct vertex
 {
       unsigned long id;
@@ -35,7 +37,9 @@ typedef struct edge
       int cost;
 } edge;
 
-vertex* new_vertex(unsigned long id, void* data);
+vertex* new_vertex(unsigned long id, void* data, size_t dsize);
+
+void delete_vertex(vertex* v);
 
 edge* new_edge(vertex* from, vertex* to, int cost);
 

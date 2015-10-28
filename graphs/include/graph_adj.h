@@ -21,7 +21,7 @@ graph* new_graph(int n_vertices, int directed);
 
 edge* get_edge(graph* g, int from, int to);
 
-vertex* add_vertex(graph* g, void* data) ;
+vertex* add_vertex(graph* g, void* data, size_t dsize);
 
 vertex* get_vertex(graph* g, int idx);
 

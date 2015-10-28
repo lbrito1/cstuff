@@ -20,19 +20,26 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "../../utils/include/debug.h"
 #include "../include/graph_defs.h"
 #include "../include/graph_ve.h"
 
-vertex* new_vertex(unsigned long id, void* data)
+vertex* new_vertex(unsigned long id, void* data, size_t datasz)
 {
       vertex* v = malloc(sizeof(vertex));
-      v->data = data;
+      v->data = malloc(sizeof(datasz));
+      memcpy(v->data, data, datasz);
       v->status = UNMARKED;
       v->id = id;
       v->x = 0.0;
       v->y = 0.0;
       return v;
+}
+
+void delete_vertex(vertex* v) {
+  free(v->data);
+  free(v);
 }
 
 edge* new_edge(vertex* from, vertex* to, int cost)
