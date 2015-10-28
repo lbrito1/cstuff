@@ -15,13 +15,13 @@ int main()
       char mydata6 = 'G';
       char mydata7 = 'H';
       
-      vertex* v1 = add_vertex(g, &mydata);
-      vertex* v2 = add_vertex(g, &mydata2);
-      vertex* v3 = add_vertex(g, &mydata3);
-      vertex* v4 = add_vertex(g, &mydata4);
-      vertex* v5 = add_vertex(g, &mydata5);
-      vertex* v6 = add_vertex(g, &mydata6);
-      vertex* v7 = add_vertex(g, &mydata7);
+      vertex* v1 = add_vertex(g, &mydata, sizeof(char));
+      vertex* v2 = add_vertex(g, &mydata2, sizeof(char));
+      vertex* v3 = add_vertex(g, &mydata3, sizeof(char));
+      vertex* v4 = add_vertex(g, &mydata4, sizeof(char));
+      vertex* v5 = add_vertex(g, &mydata5, sizeof(char));
+      vertex* v6 = add_vertex(g, &mydata6, sizeof(char));
+      vertex* v7 = add_vertex(g, &mydata7, sizeof(char));
       
       sendto(v1, 0.9, 0.4);
       sendto(v2, 0.5, 0.6);
