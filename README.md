@@ -1,8 +1,8 @@
-#Algorithms & Data structures in C
+# Algorithms & Data structures in C
 
 Here are a few basic algorithms and data structures implemented in C. Most have some kind of documentation and tests, but I highly recommend you to proofread this with a copy of Cormen's Introduction to Algorithms or similar book.
 
-##Data structures
+## Data structures
 - Vector
 - Linked list
 - Doubly linked list
@@ -15,7 +15,7 @@ Here are a few basic algorithms and data structures implemented in C. Most have 
  - AVL tree
  - Red-black tree
 
-##Algorithms
+## Algorithms
 - Sorting
  - Heapsort
  - Mergesort
